@@ -10,8 +10,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.UUID;
 
-@Entity()
+@Entity
 @Table(name = "empresa_tabela")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -21,7 +22,7 @@ public class Empresas {
     @Id()
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "empresa_id")
-    private String id;
+    private UUID id;
 
 
     @Column(name = "empresa_descricao",
@@ -47,13 +48,26 @@ public class Empresas {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "empresa_id",
+    @JoinColumn(name = "dono_id",
             nullable = false,
-            updatable = false)
+            updatable = false
+    )
     private Usuario empresaDono;
 
 
-    @ManyToMany(mappedBy = "empresa", fetch = FetchType.LAZY)
-    @JoinColumn(name = "empresaUsuarios")
-    private List<Usuario> empresaUsuarios;
+    @OneToMany(mappedBy = "empresa",
+               fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL,
+               orphanRemoval = true
+    )
+    @Column(name = "empresa_contas")
+    private List<Conta> empresaContas;
+
+
+    @OneToMany(mappedBy = "empresaId",
+               fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL,
+               orphanRemoval = true
+    )
+    private List<UsuarioEmpresa> empresaFuncionarios;
 }
