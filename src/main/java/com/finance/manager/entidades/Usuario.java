@@ -1,10 +1,7 @@
 package com.finance.manager.entidades;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -13,10 +10,9 @@ import java.util.UUID;
 @Table(name = "usuario_tabela")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class Usuario {
-    @Id()
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "usuario_id")
     private UUID id;

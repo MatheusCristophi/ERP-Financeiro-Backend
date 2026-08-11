@@ -64,6 +64,15 @@ public class Empresas {
     private List<Conta> empresaContas;
 
 
+    @OneToMany(mappedBy = "",
+               fetch = FetchType.LAZY,
+               cascade = CascadeType.ALL,
+               orphanRemoval = true
+    )
+    @Column(name = "empresa_categorias")
+    private List<Categoria> empresaCategorias;
+
+
     @OneToMany(mappedBy = "empresaId",
                fetch = FetchType.LAZY,
                cascade = CascadeType.ALL,

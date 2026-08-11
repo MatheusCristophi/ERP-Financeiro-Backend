@@ -1,10 +1,9 @@
 package com.finance.manager.entidades;
 
+import com.finance.manager.enums.ContaTipo;
+import com.finance.manager.enums.MovimentacaoTipo;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -12,8 +11,7 @@ import java.util.UUID;
 @Table(name = "conta_tabela")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class Conta {
 
     @Id()
@@ -26,6 +24,14 @@ public class Conta {
             unique = true
     )
     private String descricao;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "conta_tipo", nullable = false)
+    private ContaTipo contaTipo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "conta_movimentacao", nullable = false)
+    private MovimentacaoTipo contaMovimentacao;
 
     @Column(name = "conta_numero", nullable = false, unique = true, length = 12)
     private int numero;

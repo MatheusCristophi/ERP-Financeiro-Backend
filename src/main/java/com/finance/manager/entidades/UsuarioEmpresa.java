@@ -2,10 +2,7 @@ package com.finance.manager.entidades;
 
 import com.finance.manager.enums.UsuarioRoles;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.UUID;
 
@@ -13,8 +10,7 @@ import java.util.UUID;
 @Table(name = "empresa_usuario_tabela")
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class UsuarioEmpresa {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
