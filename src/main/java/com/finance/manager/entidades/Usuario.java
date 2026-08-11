@@ -30,10 +30,10 @@ public class Usuario {
     @Column(name = "usuario_lancamentos")
     private List<Lancamento> usuarioLancamentos;
 
-    @OneToMany(mappedBy = "categoria_usuario", fetch = FetchType.LAZY)
-    @Column(name = "usuario_categoriass")
-    private List<Categoria> usuarioCategorias;
-
     @Column(name = "usuario_ativo", nullable = false)
     private boolean ativo = true;
+
+    @OneToMany(mappedBy = "", fetch = FetchType.LAZY)
+    @Column(name = "usuario_id")
+    private List<Empresas> empresasId;
 }
