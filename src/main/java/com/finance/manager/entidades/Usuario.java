@@ -26,10 +26,14 @@ public class Usuario {
     @Column(name = "usuario_senha", nullable = false)
     private String senha;
 
+    @OneToMany(mappedBy = "lancamento_usuario", fetch = FetchType.LAZY)
+    @Column(name = "usuario_lancamentos")
+    private List<Lancamento> usuarioLancamentos;
+
     @Column(name = "usuario_ativo", nullable = false)
     private boolean ativo = true;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "empresa_usuario_id")
-    private List<Empresas> usuariosId;
+    @OneToMany(mappedBy = "", fetch = FetchType.LAZY)
+    @Column(name = "usuario_id")
+    private List<Empresas> empresasId;
 }

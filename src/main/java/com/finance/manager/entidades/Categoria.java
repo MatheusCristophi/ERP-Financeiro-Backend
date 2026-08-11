@@ -28,7 +28,7 @@ public class Categoria {
 
 
     @OneToMany(mappedBy = "lancamento_categoria", fetch = FetchType.LAZY)
-    @Column(name = "categoria_lancamentos")
+    @JoinColumn(name = "categoria_lancamentos")
     private List<Lancamento> lancamentos;
 
 

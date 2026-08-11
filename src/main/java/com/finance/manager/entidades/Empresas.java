@@ -73,10 +73,11 @@ public class Empresas {
     private List<Categoria> empresaCategorias;
 
 
-    @OneToMany(mappedBy = "empresaId",
+    @OneToMany(mappedBy = "empresa_id",
                fetch = FetchType.LAZY,
                cascade = CascadeType.ALL,
                orphanRemoval = true
     )
+    @Column(name = "empresa_funcionarios")
     private List<UsuarioEmpresa> empresaFuncionarios;
 }
