@@ -1,5 +1,6 @@
 package com.finance.manager.entidades;
 
+import com.finance.manager.enums.UsuarioRoles;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -33,7 +34,15 @@ public class Usuario {
     @Column(name = "usuario_ativo", nullable = false)
     private boolean ativo = true;
 
-    @OneToMany(mappedBy = "", fetch = FetchType.LAZY)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "pessoa_role", nullable = false)
+    private UsuarioRoles role;
+
+    @OneToMany(mappedBy = "empresa_funcionarios", fetch = FetchType.LAZY)
     @Column(name = "usuario_id")
     private List<Empresas> empresasId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "pessoa_usuarios")
+    private Pessoa usuarioPessoa;
 }

@@ -13,8 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @Data
 public class Conta {
-
-    @Id()
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "conta_id")
     private UUID id;

@@ -3,11 +3,20 @@ package com.finance.manager.entidades;
 import com.finance.manager.enums.LancamentoStatus;
 import com.finance.manager.enums.MovimentacaoTipo;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
+@Entity
+@Table(name = "lancamento_tabela")
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class Lancamento {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -22,6 +31,7 @@ public class Lancamento {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pessoa_lancamentos")
+    @Column(name = "lancamento_pessoa")
     private Pessoa pessoa;
 
     @Enumerated(EnumType.STRING)
@@ -38,7 +48,6 @@ public class Lancamento {
     @Column(name = "lancamento_movimentacao", nullable = false)
     private MovimentacaoTipo movimentacao;
 
-    @Column(name = "lancamento_usuario", nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_lancamentos")
     private Usuario lancamentoUsuario;

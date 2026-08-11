@@ -19,7 +19,7 @@ import java.util.UUID;
 @Getter
 @Setter
 public class Empresas {
-    @Id()
+    @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "empresa_id")
     private UUID id;
