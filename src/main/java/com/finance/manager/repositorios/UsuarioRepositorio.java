@@ -1,4 +1,4 @@
-package com.finance.manager.repositories;
+package com.finance.manager.repositorios;
 
 import com.finance.manager.entidades.Usuario;
 import org.springframework.data.jpa.repository.JpaRepository;

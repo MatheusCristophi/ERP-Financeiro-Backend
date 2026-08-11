@@ -17,13 +17,6 @@ public class Lancamento {
     @Column(name = "lancamento_descricao", nullable = false)
     private String descricao;
 
-    @Column(name = "lancamento_empresa", nullable = false)
-    private Empresas empresa;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pessoa_lancamentos")
-    private Pessoa pessoa;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "lancamento_status", nullable = false)
     private LancamentoStatus status;
@@ -45,9 +38,6 @@ public class Lancamento {
 
     @Column(name = "lancamento_data_emissao", nullable = false)
     private LocalDate dataEmissao;
-
-    @Column(name = "lancamento_data_vencimento", nullable = false)
-    private LocalDate dataVencimento;
 
     @Column(name = "lancamento_data_pagamento", nullable = false)
     private LocalDate dataPagamento;
