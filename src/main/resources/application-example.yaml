@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: manager
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: url_do_seu_banco
+    username: username_do_seu_banco
+    password: senha_do_seu_banco
+  flyway:
+    enable: true
+    schemas: public
+    locations: classpath:db.migration
+    baseline-on-migrate: true
+    table: flyway_schema_history
+
+server:
+  port: ${PORT:8080}
+JWT_SECRET: ${JWT_SEGREDO}
