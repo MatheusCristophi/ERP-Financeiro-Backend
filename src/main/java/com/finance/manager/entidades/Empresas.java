@@ -48,36 +48,37 @@ public class Empresas {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dono_id",
+    @JoinColumn(name = "usuario_id",
             nullable = false,
             updatable = false
     )
     private Usuario empresaDono;
 
 
-    @OneToMany(mappedBy = "empresa",
+    @OneToMany(mappedBy = "contaEmpresa",
                fetch = FetchType.LAZY,
                cascade = CascadeType.ALL,
                orphanRemoval = true
     )
-    @Column(name = "empresa_contas")
     private List<Conta> empresaContas;
 
 
-    @OneToMany(mappedBy = "",
+    @OneToMany(mappedBy = "categoriaEmpresa",
                fetch = FetchType.LAZY,
                cascade = CascadeType.ALL,
                orphanRemoval = true
     )
-    @Column(name = "empresa_categorias")
     private List<Categoria> empresaCategorias;
 
+    @OneToMany(mappedBy = "lancamentoEmpresa",
+               fetch = FetchType.LAZY
+    )
+    private List<Lancamento> empresaLancamentos;
 
-    @OneToMany(mappedBy = "empresa_id",
+    @OneToMany(mappedBy = "empresaId",
                fetch = FetchType.LAZY,
                cascade = CascadeType.ALL,
                orphanRemoval = true
     )
-    @Column(name = "empresa_funcionarios")
     private List<UsuarioEmpresa> empresaFuncionarios;
 }

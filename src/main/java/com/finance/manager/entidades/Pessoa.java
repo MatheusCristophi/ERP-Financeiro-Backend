@@ -33,11 +33,9 @@ public class Pessoa {
     @Enumerated(EnumType.STRING)
     private PessoaTipo tipo;
 
-    @OneToMany(mappedBy = "lancamento_pessoa")
-    @Column(name = "pessoa_lancamentos")
+    @OneToMany(mappedBy = "lancamentoPessoa")
     private List<Lancamento> pessoaLancamentos;
 
-    @OneToMany(mappedBy = "usuario_pessoas")
-    @Column(name = "pessoa_usuarios")
+    @OneToMany(mappedBy = "usuarioPessoa")
     private List<Usuario> pessoaUsuarios;
 }

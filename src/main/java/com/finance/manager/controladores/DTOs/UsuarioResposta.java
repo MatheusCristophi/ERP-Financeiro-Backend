@@ -8,16 +8,14 @@ import java.util.List;
 public record UsuarioResposta(
         String nome,
         String email,
-        boolean ativo,
-        UsuarioRoles role
+        boolean ativo
 ) {
 
     public static UsuarioResposta from(Usuario usuario) {
         return new UsuarioResposta(
             usuario.getNome(),
             usuario.getEmail(),
-            usuario.isAtivo(),
-            usuario.getRole()
+            usuario.isAtivo()
         );
     }
 

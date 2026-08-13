@@ -27,22 +27,16 @@ public class Usuario {
     @Column(name = "usuario_senha", nullable = false)
     private String senha;
 
-    @OneToMany(mappedBy = "lancamento_usuario", fetch = FetchType.LAZY)
-    @Column(name = "usuario_lancamentos")
+    @OneToMany(mappedBy = "lancamentoUsuario", fetch = FetchType.LAZY)
     private List<Lancamento> usuarioLancamentos;
 
     @Column(name = "usuario_ativo", nullable = false)
     private boolean ativo = true;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "pessoa_role", nullable = false)
-    private UsuarioRoles role;
-
-    @OneToMany(mappedBy = "empresa_funcionarios", fetch = FetchType.LAZY)
-    @Column(name = "usuario_id")
-    private List<Empresas> empresasId;
+    @OneToMany(mappedBy = "usuarioId", fetch = FetchType.LAZY)
+    private List<UsuarioEmpresa> usuario_empresas;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pessoa_usuarios")
+    @JoinColumn(name = "pessoa_id")
     private Pessoa usuarioPessoa;
 }

@@ -33,12 +33,12 @@ public class Conta {
     private MovimentacaoTipo contaMovimentacao;
 
     @Column(name = "conta_numero", nullable = false, unique = true, length = 12)
-    private int numero;
+    private String numero;
 
     @Column(name = "conta_agencia", nullable = false, length = 5)
-    private int agencia;
+    private String agencia;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "empresa_contas")
-    private Empresas empresa;
+    @JoinColumn(name = "empresaContas")
+    private Empresas contaEmpresa;
 }

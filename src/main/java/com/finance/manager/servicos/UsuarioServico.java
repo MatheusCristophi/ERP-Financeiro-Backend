@@ -21,7 +21,6 @@ public class UsuarioServico {
         usuario.setNome(requisicao.nome());
         usuario.setEmail(requisicao.email());
         usuario.setSenha(requisicao.senha());
-        usuario.setRole(requisicao.role());
 
         try {
             usuarioRepositorio.save(usuario);
