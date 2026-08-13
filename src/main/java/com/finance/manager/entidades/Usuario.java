@@ -1,6 +1,5 @@
 package com.finance.manager.entidades;
 
-import com.finance.manager.enums.UsuarioRoles;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -16,9 +15,9 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "usuario_id")
-    private UUID id;
+    private UUID usuarioId;
 
-    @Column(name = "usuario_nome", unique = true, nullable = false)
+    @Column(name = "usuario_nome", nullable = false)
     private String nome;
 
     @Column(name = "usuario_email", unique = true, nullable = false)
@@ -34,9 +33,9 @@ public class Usuario {
     private boolean ativo = true;
 
     @OneToMany(mappedBy = "usuarioId", fetch = FetchType.LAZY)
-    private List<UsuarioEmpresa> usuario_empresas;
+    private List<UsuarioEmpresa> usuarioEmpresas;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pessoa_id")
+    @JoinColumn(name = "usuario_pessoas")
     private Pessoa usuarioPessoa;
 }

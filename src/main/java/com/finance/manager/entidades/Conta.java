@@ -18,10 +18,7 @@ public class Conta {
     @Column(name = "conta_id")
     private UUID id;
 
-    @Column(name = "conta_descricao",
-            nullable = false,
-            unique = true
-    )
+    @Column(name = "conta_descricao", nullable = false)
     private String descricao;
 
     @Enumerated(EnumType.STRING)
@@ -39,6 +36,6 @@ public class Conta {
     private String agencia;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "empresaContas")
+    @JoinColumn(name = "conta_empresa")
     private Empresas contaEmpresa;
 }

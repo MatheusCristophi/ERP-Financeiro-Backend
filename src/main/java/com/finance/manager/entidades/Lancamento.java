@@ -8,8 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.List;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -27,11 +26,11 @@ public class Lancamento {
     private String descricao;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "empresa_id")
+    @JoinColumn(name = "lancamento_empresa")
     private Empresas lancamentoEmpresa;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "pessoa_id")
+    @JoinColumn(name = "lancamento_pessoa")
     private Pessoa lancamentoPessoa;
 
     @Enumerated(EnumType.STRING)
@@ -41,25 +40,26 @@ public class Lancamento {
     @Column(name = "lancamento_valor", nullable = false, precision = 12, scale = 2)
     private BigDecimal valor;
 
-    @OneToMany(mappedBy = "categoria_lancamentos", fetch = FetchType.LAZY)
-    private List<Categoria> lancamentoCategoria;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lancamento_categoria")
+    private Categoria lancamentoCategoria;
 
     @Column(name = "lancamento_movimentacao", nullable = false)
     @Enumerated(EnumType.STRING)
     private MovimentacaoTipo movimentacao;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id")
+    @JoinColumn(name = "lancamento_usuario")
     private Usuario lancamentoUsuario;
 
     @Column(name = "lancamento_data_emissao", nullable = false)
-    private LocalDate dataEmissao;
+    private LocalDateTime dataEmissao;
 
     @Column(name = "lancamento_data_vencimento", nullable = false)
-    private LocalDate dataVencimento;
+    private LocalDateTime dataVencimento;
 
     @Column(name = "lancamento_data_pagamento")
-    private LocalDate dataPagamento;
+    private LocalDateTime dataPagamento;
 
     @Column(name = "lancamento_observacao")
     private String observacao;

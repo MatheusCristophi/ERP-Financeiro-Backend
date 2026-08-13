@@ -18,24 +18,24 @@ public class Pessoa {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "pessoa_id")
-    private UUID id;
+    private UUID pessoaId;
 
     @Column(name = "pessoa_nome", nullable = false)
     private String nome;
 
-    @Column(name = "pessoa_cpf", nullable = false, unique = true)
+    @Column(name = "pessoa_cpf", unique = true)
     private String cpf;
 
-    @Column(name = "pessoa_cnpj", nullable = false, unique = true)
+    @Column(name = "pessoa_cnpj", unique = true)
     private String cnpj;
 
     @Column(name = "pessoa_tipo", nullable = false)
     @Enumerated(EnumType.STRING)
     private PessoaTipo tipo;
 
-    @OneToMany(mappedBy = "lancamentoPessoa")
+    @OneToMany(mappedBy = "lancamentoPessoa", fetch = FetchType.LAZY)
     private List<Lancamento> pessoaLancamentos;
 
-    @OneToMany(mappedBy = "usuarioPessoa")
+    @OneToMany(mappedBy = "usuarioPessoa", fetch = FetchType.LAZY)
     private List<Usuario> pessoaUsuarios;
 }

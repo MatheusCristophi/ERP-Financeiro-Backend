@@ -22,13 +22,10 @@ public class Empresas {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "empresa_id")
-    private UUID id;
+    private UUID empresaId;
 
 
-    @Column(name = "empresa_descricao",
-            nullable = false,
-            unique = true
-    )
+    @Column(name = "empresa_descricao", nullable = false)
     private String descricao;
 
 
@@ -48,7 +45,7 @@ public class Empresas {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id",
+    @JoinColumn(name = "empresa_dono",
             nullable = false,
             updatable = false
     )

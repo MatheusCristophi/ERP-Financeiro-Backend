@@ -6,13 +6,13 @@ spring:
       ddl-auto: validate
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: postgresql://user:password@db:5432/dbname
+    url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
   flyway:
-    enable: true
+    enabled: true
     schemas: public
-    locations: classpath:db.migration
+    locations: classpath:db/migration
     baseline-on-migrate: true
     table: flyway_schema_history
 
