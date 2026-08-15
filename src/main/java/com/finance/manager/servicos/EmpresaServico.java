@@ -69,6 +69,25 @@ public class EmpresaServico {
     }
 
     @Transactional
+    public EmpresaResposta atualizarEmpresaCompleta(UUID empresaId, UUID usuarioId, EmpresaRequisicao empresaRequisicao){
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresa = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a empresa"));
+
+        if(!empresa.getEmpresaDono().getUsuarioId().equals(usuario.getUsuarioId())) throw new SemPermissaoException(usuario.getNome());
+
+        empresa.setDescricao(empresaRequisicao.descricao());
+        empresa.setEmpresaTipo(empresaRequisicao.empresaTiposAtividade());
+        empresa.setEmpresaRegime(empresaRequisicao.empresaRegimeTributario());
+        empresa.setEmpresaNaturezaPessoa(empresaRequisicao.empresaNaturezaPessoa());
+        empresa.setEmpresaDono(usuario);
+
+        return EmpresaResposta.from(empresa);
+    }
+
+    @Transactional
     public void desativarEmpresa(UUID usuarioId, UUID empresaId){
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
