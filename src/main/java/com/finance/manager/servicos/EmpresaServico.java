@@ -56,6 +56,19 @@ public class EmpresaServico {
     }
 
     @Transactional
+    public EmpresaResposta buscarEmpresaPorId(UUID usuarioId, UUID empresaId) {
+        Usuario usuario = this.usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("as empresas"));
+
+        Empresas empresa = this.empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("as empresas"));
+
+        if(!empresa.getEmpresaDono().getUsuarioId().equals(usuarioId)) throw new SemPermissaoException(usuario.getNome());
+
+        return EmpresaResposta.from(empresa);
+    }
+
+    @Transactional
     public void desativarEmpresa(UUID usuarioId, UUID empresaId){
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
@@ -63,9 +76,7 @@ public class EmpresaServico {
         Empresas empresas = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a empresa"));
 
-        if (!empresas.getEmpresaDono().getUsuarioId().equals(usuario.getUsuarioId())) {
-            throw new SemPermissaoException(usuario.getNome());
-        }
+        if (!empresas.getEmpresaDono().getUsuarioId().equals(usuario.getUsuarioId())) throw new SemPermissaoException(usuario.getNome());
 
         empresas.setStatus(false);
     }
