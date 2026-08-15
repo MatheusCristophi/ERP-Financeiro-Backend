@@ -1,7 +1,6 @@
-package com.finance.manager.controladores.DTOs;
+package com.finance.manager.controladores.usuariodtos;
 
 import com.finance.manager.entidades.Usuario;
-import com.finance.manager.enums.UsuarioRoles;
 
 import java.util.List;
 

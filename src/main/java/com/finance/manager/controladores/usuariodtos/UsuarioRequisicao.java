@@ -1,4 +1,4 @@
-package com.finance.manager.controladores.DTOs;
+package com.finance.manager.controladores.usuariodtos;
 
 import com.finance.manager.enums.UsuarioRoles;
 
