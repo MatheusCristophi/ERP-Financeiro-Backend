@@ -4,10 +4,13 @@ import com.finance.manager.controladores.empresadto.EmpresaRequisicao;
 import com.finance.manager.controladores.empresadto.EmpresaResposta;
 import com.finance.manager.entidades.Empresas;
 import com.finance.manager.entidades.Usuario;
-import com.finance.manager.excecoes.UsuarioNaoEncontradoException;
+import com.finance.manager.excecoes.NaoEncontradoException;
 import com.finance.manager.repositorios.EmpresaRepositorio;
 import com.finance.manager.repositorios.UsuarioRepositorio;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EmpresaServico {
@@ -20,9 +23,9 @@ public class EmpresaServico {
         this.usuarioRepositorio = usuarioRepositorio;
     }
 
-    public EmpresaResposta criarEmpresa(EmpresaRequisicao empresaRequisicao) {
-        Usuario dono = this.usuarioRepositorio.findById(empresaRequisicao.empresaDono())
-                .orElseThrow(() -> new UsuarioNaoEncontradoException(empresaRequisicao.empresaDono()));
+    public EmpresaResposta criarEmpresa(EmpresaRequisicao empresaRequisicao, UUID id) {
+        Usuario dono = this.usuarioRepositorio.findById(id)
+                .orElseThrow(() -> new NaoEncontradoException("o Email"));
 
         Empresas empresas = new Empresas();
 
@@ -35,5 +38,16 @@ public class EmpresaServico {
         this.empresaRepositorio.save(empresas);
 
         return EmpresaResposta.from(empresas);
+    }
+
+    public List<EmpresaResposta> buscarTodasEmpresas(UUID id){
+        Usuario usuario = usuarioRepositorio.findById(id)
+                .orElseThrow(() -> new NaoEncontradoException("as Empresas"));
+
+        List<Empresas> empresas = empresaRepositorio.findAllByEmpresaDono(usuario);
+
+        if(empresas.isEmpty()) throw new NaoEncontradoException("as Empresas");
+
+        return EmpresaResposta.of(empresas);
     }
 }
