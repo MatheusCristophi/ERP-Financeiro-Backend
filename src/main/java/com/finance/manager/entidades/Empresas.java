@@ -78,4 +78,7 @@ public class Empresas {
                orphanRemoval = true
     )
     private List<UsuarioEmpresa> empresaFuncionarios;
+
+    @Column(name = "empresa_status", nullable = false)
+    private boolean status = true;
 }
