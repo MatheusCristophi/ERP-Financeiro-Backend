@@ -43,7 +43,7 @@ public class EmpresaServico {
         return EmpresaResposta.from(empresas);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<EmpresaResposta> buscarTodasEmpresas(UUID usuarioId){
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("as Empresas"));
@@ -63,7 +63,7 @@ public class EmpresaServico {
         Empresas empresas = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a empresa"));
 
-        if (empresas.getEmpresaDono() != usuario) {
+        if (!empresas.getEmpresaDono().getUsuarioId().equals(usuario.getUsuarioId())) {
             throw new SemPermissaoException(usuario.getNome());
         }
 
