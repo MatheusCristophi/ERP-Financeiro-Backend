@@ -1,1 +1,0 @@
-ALTER TABLE empresa_tabela ADD empresa_status BOOLEAN;

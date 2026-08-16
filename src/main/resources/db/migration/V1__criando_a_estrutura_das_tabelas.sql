@@ -75,7 +75,9 @@ CREATE TABLE empresa_tabela (
     empresa_tipo empresa_tipo_atividade NOT NULL,
     empresa_regime empresa_regime_tibutario NOT NULL,
     empresa_natureza_pessoa empresa_natureza NOT NULL,
-    empresa_dono UUID NOT NULL REFERENCES usuario_tabela(usuario_id)
+    empresa_dono UUID NOT NULL REFERENCES usuario_tabela(usuario_id),
+    empresa_status BOOLEAN DEFAULT true,
+    CONSTRAINT uk_empresa_dono_empresa_descricao UNIQUE(empresa_descricao, empresa_dono)
 );
 
 CREATE TABLE categoria_tabela (

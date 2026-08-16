@@ -1,7 +1,9 @@
 package com.finance.manager.controladores;
 
+import com.finance.manager.controladores.empresadto.EmpresaRequisicao;
 import com.finance.manager.controladores.empresadto.EmpresaResposta;
 import com.finance.manager.servicos.EmpresaServico;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,13 +21,19 @@ public class EmpresaControlador {
 
     @GetMapping("/buscartodasempresas/{usuarioId}")
     public ResponseEntity<List<EmpresaResposta>> todasEmpresas(@PathVariable UUID usuarioId) {
-        List<EmpresaResposta> response = this.empresaServico.buscarTodasEmpresas(usuarioId);
-        return ResponseEntity.ok(response);
+        List<EmpresaResposta> resposta = this.empresaServico.buscarTodasEmpresas(usuarioId);
+        return ResponseEntity.ok(resposta);
     }
 
     @GetMapping("/buscarempresaid/{empresaId}")
     public ResponseEntity<EmpresaResposta> buscarEmpresa(@RequestParam UUID usuarioId, @PathVariable UUID empresaId) {
-        EmpresaResposta response = this.empresaServico.buscarEmpresaPorId(usuarioId, empresaId);
-        return ResponseEntity.ok(response);
+        EmpresaResposta resposta = this.empresaServico.buscarEmpresaPorId(usuarioId, empresaId);
+        return ResponseEntity.ok(resposta);
+    }
+
+    @PostMapping("/criarempresa/{usuarioId}")
+    public ResponseEntity<EmpresaResposta> criarEmpresa(@RequestBody EmpresaRequisicao requisicao, @PathVariable UUID usuarioId){
+        EmpresaResposta resposta = this.empresaServico.criarEmpresa(requisicao, usuarioId);
+        return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
 }

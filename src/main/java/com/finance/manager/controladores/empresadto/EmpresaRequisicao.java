@@ -10,7 +10,6 @@ public record EmpresaRequisicao(
         String descricao,
         EmpresaTiposAtividade empresaTiposAtividade,
         EmpresaRegimeTributario empresaRegimeTributario,
-        EmpresaNaturezaPessoa empresaNaturezaPessoa,
-        UUID empresaDono
+        EmpresaNaturezaPessoa empresaNaturezaPessoa
 ) {
 }

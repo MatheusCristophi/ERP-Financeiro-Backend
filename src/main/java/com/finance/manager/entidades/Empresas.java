@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.util.List;
 import java.util.UUID;
@@ -31,16 +32,19 @@ public class Empresas {
 
     @Column(name = "empresa_tipo", nullable = false)
     @Enumerated(EnumType.STRING)
+    @ColumnTransformer(write = "?::empresa_tipo_atividade")
     private EmpresaTiposAtividade empresaTipo;
 
 
     @Column(name = "empresa_regime", nullable = false)
     @Enumerated(EnumType.STRING)
+    @ColumnTransformer(write = "?::empresa_regime_tibutario")
     private EmpresaRegimeTributario empresaRegime;
 
 
     @Column(name = "empresa_natureza_pessoa", nullable = false)
     @Enumerated(EnumType.STRING)
+    @ColumnTransformer(write = "?::empresa_natureza")
     private EmpresaNaturezaPessoa empresaNaturezaPessoa;
 
 
