@@ -45,17 +45,15 @@ public class EmpresaServico {
 
     @Transactional(readOnly = true)
     public List<EmpresaResposta> buscarTodasEmpresas(UUID usuarioId){
-        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+        Usuario usuario = this.usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("as Empresas"));
 
-        List<Empresas> empresas = empresaRepositorio.findAllByEmpresaDono(usuario);
-
-        if(empresas.isEmpty()) throw new NaoEncontradoException("as Empresas");
+        List<Empresas> empresas = this.empresaRepositorio.findAllByEmpresaDono(usuario);
 
         return EmpresaResposta.of(empresas);
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public EmpresaResposta buscarEmpresaPorId(UUID usuarioId, UUID empresaId) {
         Usuario usuario = this.usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("as empresas"));
@@ -70,10 +68,10 @@ public class EmpresaServico {
 
     @Transactional
     public EmpresaResposta atualizarEmpresaCompleta(UUID empresaId, UUID usuarioId, EmpresaRequisicao empresaRequisicao){
-        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+        Usuario usuario = this.usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        Empresas empresa = empresaRepositorio.findById(empresaId)
+        Empresas empresa = this.empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a empresa"));
 
         if(!empresa.getEmpresaDono().getUsuarioId().equals(usuario.getUsuarioId())) throw new SemPermissaoException(usuario.getNome());
@@ -89,10 +87,10 @@ public class EmpresaServico {
 
     @Transactional
     public void desativarEmpresa(UUID usuarioId, UUID empresaId){
-        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+        Usuario usuario = this.usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        Empresas empresas = empresaRepositorio.findById(empresaId)
+        Empresas empresas = this.empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a empresa"));
 
         if (!empresas.getEmpresaDono().getUsuarioId().equals(usuario.getUsuarioId())) throw new SemPermissaoException(usuario.getNome());
