@@ -12,7 +12,8 @@ public record EmpresaResposta(
         String descricao,
         EmpresaTiposAtividade empresaTiposAtividade,
         EmpresaRegimeTributario empresaRegimeTributario,
-        EmpresaNaturezaPessoa empresaNaturezaPessoa
+        EmpresaNaturezaPessoa empresaNaturezaPessoa,
+        Boolean status
 ) {
 
     public static EmpresaResposta from(Empresas empresa){
@@ -20,7 +21,8 @@ public record EmpresaResposta(
                 empresa.getDescricao(),
                 empresa.getEmpresaTipo(),
                 empresa.getEmpresaRegime(),
-                empresa.getEmpresaNaturezaPessoa()
+                empresa.getEmpresaNaturezaPessoa(),
+                empresa.isStatus()
         );
     }
 

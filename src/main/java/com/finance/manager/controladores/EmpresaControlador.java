@@ -37,9 +37,15 @@ public class EmpresaControlador {
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
 
-    @PutMapping("atualizarempresa/{empresaId}")
+    @PutMapping("/atualizarempresa/{empresaId}")
     public ResponseEntity<EmpresaResposta> atualizarEmpresa(@PathVariable UUID empresaId, @RequestBody EmpresaRequisicao requisicao, @RequestParam UUID usuarioId) {
         EmpresaResposta resposta = this.empresaServico.atualizarEmpresaCompleta(empresaId, usuarioId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.OK);
+    }
+
+    @PatchMapping("/desativarempresa/{empresaId}")
+    public ResponseEntity<Void> desativarEmpresa(@PathVariable UUID empresaId, @RequestParam UUID usuarioId) {
+        this.empresaServico.desativarEmpresa(usuarioId, empresaId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
