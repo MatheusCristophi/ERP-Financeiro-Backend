@@ -36,4 +36,10 @@ public class EmpresaControlador {
         EmpresaResposta resposta = this.empresaServico.criarEmpresa(requisicao, usuarioId);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
+
+    @PutMapping("atualizarempresa/{empresaId}")
+    public ResponseEntity<EmpresaResposta> atualizarEmpresa(@PathVariable UUID empresaId, @RequestBody EmpresaRequisicao requisicao, @RequestParam UUID usuarioId) {
+        EmpresaResposta resposta = this.empresaServico.atualizarEmpresaCompleta(empresaId, usuarioId, requisicao);
+        return new ResponseEntity<>(resposta, HttpStatus.OK);
+    }
 }
