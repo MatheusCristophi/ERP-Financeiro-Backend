@@ -25,7 +25,7 @@ public class TokenServico {
         return token;
     }
 
-    private String validarToken(String token) {
+    public String validarToken(String token) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(chaveSecreta);
             return JWT.require(algorithm)
