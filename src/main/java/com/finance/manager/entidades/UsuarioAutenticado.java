@@ -8,7 +8,12 @@ import java.util.Collection;
 import java.util.List;
 
 public class UsuarioAutenticado implements UserDetails {
-    Usuario usuario;
+
+    private final Usuario usuario;
+
+    public UsuarioAutenticado(Usuario usuario) {
+        this.usuario = usuario;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
