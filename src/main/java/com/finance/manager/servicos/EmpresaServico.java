@@ -4,9 +4,12 @@ import com.finance.manager.controladores.empresadto.EmpresaRequisicao;
 import com.finance.manager.controladores.empresadto.EmpresaResposta;
 import com.finance.manager.entidades.Empresas;
 import com.finance.manager.entidades.Usuario;
+import com.finance.manager.entidades.UsuarioEmpresa;
+import com.finance.manager.enums.UsuarioRoles;
 import com.finance.manager.excecoes.NaoEncontradoException;
 import com.finance.manager.excecoes.SemPermissaoException;
 import com.finance.manager.repositorios.EmpresaRepositorio;
+import com.finance.manager.repositorios.UsuarioEmpresaRepositorio;
 import com.finance.manager.repositorios.UsuarioRepositorio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +21,12 @@ import java.util.UUID;
 public class EmpresaServico {
 
     private final EmpresaRepositorio empresaRepositorio;
+    private final UsuarioEmpresaRepositorio usuarioEmpresaRepositorio;
     private final UsuarioRepositorio usuarioRepositorio;
 
-    public EmpresaServico(EmpresaRepositorio empresaRepositorio, UsuarioRepositorio usuarioRepositorio) {
+    public EmpresaServico(EmpresaRepositorio empresaRepositorio, UsuarioEmpresaRepositorio usuarioEmpresaRepositorio, UsuarioRepositorio usuarioRepositorio) {
         this.empresaRepositorio = empresaRepositorio;
+        this.usuarioEmpresaRepositorio = usuarioEmpresaRepositorio;
         this.usuarioRepositorio = usuarioRepositorio;
     }
 
@@ -29,6 +34,10 @@ public class EmpresaServico {
     public EmpresaResposta criarEmpresa(EmpresaRequisicao empresaRequisicao, UUID usuarioId) {
         Usuario dono = this.usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Email"));
+
+        if(usuarioEmpresaRepositorio.findByUsuarioId(dono).getRole() != UsuarioRoles.DONO) {
+            throw new SemPermissaoException(dono.getNome());
+        }
 
         Empresas empresas = new Empresas();
 
