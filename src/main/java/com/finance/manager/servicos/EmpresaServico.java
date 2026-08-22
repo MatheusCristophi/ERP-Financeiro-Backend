@@ -35,7 +35,7 @@ public class EmpresaServico {
         Usuario dono = this.usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Email"));
 
-        if(usuarioEmpresaRepositorio.findByUsuarioId(dono).getRole() != UsuarioRoles.DONO) {
+        if(usuarioEmpresaRepositorio.findByUsuarioId(dono.getUsuarioId()).getRole() != UsuarioRoles.DONO) {
             throw new SemPermissaoException(dono.getNome());
         }
 
@@ -48,7 +48,6 @@ public class EmpresaServico {
         empresas.setEmpresaDono(dono);
 
         this.empresaRepositorio.save(empresas);
-
         return EmpresaResposta.from(empresas);
     }
 
