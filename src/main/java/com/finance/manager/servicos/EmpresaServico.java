@@ -4,7 +4,6 @@ import com.finance.manager.controladores.empresadto.EmpresaRequisicao;
 import com.finance.manager.controladores.empresadto.EmpresaResposta;
 import com.finance.manager.entidades.Empresas;
 import com.finance.manager.entidades.Usuario;
-import com.finance.manager.entidades.UsuarioEmpresa;
 import com.finance.manager.enums.UsuarioRoles;
 import com.finance.manager.excecoes.NaoEncontradoException;
 import com.finance.manager.excecoes.SemPermissaoException;

@@ -9,7 +9,6 @@ import com.finance.manager.entidades.UsuarioEmpresa;
 import com.finance.manager.enums.UsuarioRoles;
 import com.finance.manager.excecoes.EmailJaExisteException;
 import com.finance.manager.excecoes.NaoEncontradoException;
-import com.finance.manager.excecoes.SemPermissaoException;
 import com.finance.manager.repositorios.EmpresaRepositorio;
 import com.finance.manager.repositorios.UsuarioEmpresaRepositorio;
 import com.finance.manager.repositorios.UsuarioRepositorio;
@@ -81,6 +80,19 @@ public class UsuarioServico implements UserDetailsService {
         usuarioEmpresa.setEmpresaId(empresa);
         usuarioEmpresa.setRole(role);
         usuarioEmpresaRepositorio.save(usuarioEmpresa);
+
+        return UsuarioResposta.from(usuario);
+    }
+
+    @Transactional
+    public UsuarioResposta desativarUsuario(UUID funcionarioId, UUID usuarioId) {
+        Usuario funcionario = usuarioRepositorio.findById(funcionarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        usuario.setAtivo(false);
 
         return UsuarioResposta.from(usuario);
     }

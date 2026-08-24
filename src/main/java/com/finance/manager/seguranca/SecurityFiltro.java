@@ -1,6 +1,5 @@
 package com.finance.manager.seguranca;
 
-import com.finance.manager.entidades.Usuario;
 import com.finance.manager.servicos.UsuarioServico;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
