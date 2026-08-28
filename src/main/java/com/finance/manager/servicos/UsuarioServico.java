@@ -9,6 +9,7 @@ import com.finance.manager.entidades.UsuarioEmpresa;
 import com.finance.manager.enums.UsuarioRoles;
 import com.finance.manager.excecoes.EmailJaExisteException;
 import com.finance.manager.excecoes.NaoEncontradoException;
+import com.finance.manager.excecoes.SemPermissaoException;
 import com.finance.manager.repositorios.EmpresaRepositorio;
 import com.finance.manager.repositorios.UsuarioEmpresaRepositorio;
 import com.finance.manager.repositorios.UsuarioRepositorio;
@@ -85,12 +86,18 @@ public class UsuarioServico implements UserDetailsService {
     }
 
     @Transactional
-    public UsuarioResposta desativarUsuario(UUID funcionarioId, UUID usuarioId) {
-        Usuario funcionario = usuarioRepositorio.findById(funcionarioId)
-                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
-
+    public UsuarioResposta desativarUsuario(UUID funcionarioId, UUID usuarioId, UUID empresaId) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        List<UsuarioEmpresa> usuarioEmpresa = usuarioEmpresaRepositorio.findAllByUsuarioIdAndEmpresaId(funcionarioId, empresaId);
+
+        Usuario funcionario = usuarioRepositorio.findById(funcionarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Funcionário"));
+
+        if (!funcionario.getUsuarioEmpresas().equals(usuarioEmpresa)) throw new SemPermissaoException(usuario.getEmail());
+
+        if(usuarioEmpresa.isEmpty()) throw new SemPermissaoException(funcionario.getEmail());
 
         usuario.setAtivo(false);
 
