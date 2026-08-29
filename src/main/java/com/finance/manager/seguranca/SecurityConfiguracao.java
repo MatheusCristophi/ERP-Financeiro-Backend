@@ -1,5 +1,6 @@
 package com.finance.manager.seguranca;
 
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,9 +19,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity
 public class SecurityConfiguracao {
 
-    private final SecurityFiltro securityFiltro;
+    private final ObjectProvider<SecurityFiltro> securityFiltro;
 
-    public SecurityConfiguracao(SecurityFiltro securityFiltro) {
+    public SecurityConfiguracao(ObjectProvider<SecurityFiltro> securityFiltro) {
         this.securityFiltro = securityFiltro;
     }
 
@@ -33,7 +34,7 @@ public class SecurityConfiguracao {
                 .authorizeHttpRequests(url -> url
 
                         .anyRequest().permitAll())
-                .addFilterBefore(securityFiltro, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(securityFiltro.getObject(), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
