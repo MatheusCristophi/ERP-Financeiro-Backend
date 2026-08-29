@@ -48,14 +48,9 @@ public class UsuarioServico implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public List<UsuarioResposta> buscarUsuarios(UUID usuarioId, UUID empresaId){
-        UsuarioEmpresa usuarioEmpresa = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuarioId, empresaId);
 
-        boolean ehAdministrador = usuarioEmpresa.getRole().equals(UsuarioRoles.DONO)
-                || usuarioEmpresa.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA);
-
-        if(!ehAdministrador) {
-            throw new SemPermissaoException(usuarioEmpresa.getUsuarioId().getNome());
-        }
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
         List<UsuarioEmpresa> todosVinculos = usuarioEmpresaRepositorio.findAllByEmpresaId(empresaId);
 
@@ -67,10 +62,24 @@ public class UsuarioServico implements UserDetailsService {
     }
 
     @Transactional
-    public UsuarioResposta criarUsuario(UsuarioRequisicao requisicao,
+    public UsuarioResposta criarUsuario(UUID usuarioId,
+                                        UsuarioRequisicao requisicao,
                                         UsuarioRoles role,
                                         UUID empresaId
     ) {
+        Usuario funcionario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        UsuarioEmpresa vinculo = funcionario.getUsuarioEmpresas().stream().findFirst().orElse(null);
+
+        if(vinculo == null) {
+            throw new NaoEncontradoException("o Usuário");
+        }
+
+        if(vinculo.getRole().equals(UsuarioRoles.DONO) ||
+                vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA)
+        ) throw new SemPermissaoException(funcionario.getNome());
+
         Usuario usuario = new Usuario();
 
         if(usuarioRepositorio.findByEmail(requisicao.email()).isPresent()) {
