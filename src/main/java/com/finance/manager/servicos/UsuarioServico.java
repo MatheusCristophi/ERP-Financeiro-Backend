@@ -48,11 +48,21 @@ public class UsuarioServico implements UserDetailsService {
 
     @Transactional(readOnly = true)
     public List<UsuarioResposta> buscarUsuarios(UUID usuarioId, UUID empresaId){
-        List<UsuarioEmpresa> usuarioEmpresa = usuarioEmpresaRepositorio.findAllByUsuarioIdAndEmpresaId(usuarioId, empresaId);
+        UsuarioEmpresa usuarioEmpresa = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuarioId, empresaId);
 
-        List<Usuario> usuarios = usuarioEmpresa.stream()
+        boolean ehAdministrador = usuarioEmpresa.getRole().equals(UsuarioRoles.DONO)
+                || usuarioEmpresa.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA);
+
+        if(!ehAdministrador) {
+            throw new SemPermissaoException(usuarioEmpresa.getUsuarioId().getNome());
+        }
+
+        List<UsuarioEmpresa> todosVinculos = usuarioEmpresaRepositorio.findAllByEmpresaId(empresaId);
+
+        List<Usuario> usuarios = todosVinculos.stream()
                 .map(UsuarioEmpresa::getUsuarioId)
                 .toList();
+
         return UsuarioResposta.of(usuarios);
     }
 
