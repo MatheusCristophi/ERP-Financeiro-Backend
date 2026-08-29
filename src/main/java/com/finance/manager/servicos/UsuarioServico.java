@@ -70,7 +70,7 @@ public class UsuarioServico implements UserDetailsService {
         Usuario funcionario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        UsuarioEmpresa vinculo = funcionario.getUsuarioEmpresas().stream().findFirst().orElse(null);
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuarioId, empresaId);
 
         if(vinculo == null) {
             throw new NaoEncontradoException("o Usuário");
@@ -100,6 +100,38 @@ public class UsuarioServico implements UserDetailsService {
         usuarioEmpresa.setEmpresaId(empresa);
         usuarioEmpresa.setRole(role);
         usuarioEmpresaRepositorio.save(usuarioEmpresa);
+
+        return UsuarioResposta.from(usuario);
+    }
+
+    @Transactional
+    public UsuarioResposta atualizarUsuario(UUID funcionarioId,
+                                            UUID usuarioId,
+                                            UsuarioRequisicao requisicao,
+                                            UsuarioRoles role,
+                                            UUID empresaId
+    ) {
+        Usuario funcionario = usuarioRepositorio.findById(funcionarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(funcionarioId, empresaId);
+
+        if(vinculo == null) {
+            throw new NaoEncontradoException("o Usuário");
+        }
+
+        if(vinculo.getRole().equals(UsuarioRoles.DONO) ||
+                vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA)
+        ) throw new SemPermissaoException(funcionario.getNome());
+
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        if(requisicao.email() != null) usuario.setEmail(requisicao.email());
+
+        if(requisicao.nome() != null) usuario.setNome(requisicao.nome());
+
+        if(requisicao.senha() != null) usuario.setSenha(encoder.encode(requisicao.senha()));
 
         return UsuarioResposta.from(usuario);
     }
