@@ -46,19 +46,25 @@ public class UsuarioServico implements UserDetailsService {
     }
 
     @Transactional(readOnly = true)
-    public List<UsuarioResposta> buscarUsuarios(UUID usuarioId, UUID empresaId){
+    public List<UsuarioResposta> buscarUsuarios(UUID usuarioId, UUID empresaId) {
 
-        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+        Usuario usuarioLogado = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        List<UsuarioEmpresa> todosVinculos = usuarioEmpresaRepositorio.findAllByEmpresaId(empresaId);
+        boolean pertenceAEmpresa = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioId, empresaId);
 
-        List<Usuario> usuarios = todosVinculos.stream()
+        if(!pertenceAEmpresa) {
+            throw new SemPermissaoException(usuarioLogado.getNome());
+        }
+
+        List<UsuarioEmpresa> empresaFuncionarios = usuarioEmpresaRepositorio.findAllByEmpresaId(empresaId);
+
+        return UsuarioResposta.of(empresaFuncionarios.stream()
                 .map(UsuarioEmpresa::getUsuarioId)
-                .toList();
-
-        return UsuarioResposta.of(usuarios);
+                .toList()
+        );
     }
+
 
     @Transactional
     public UsuarioResposta criarUsuario(UUID usuarioId,
