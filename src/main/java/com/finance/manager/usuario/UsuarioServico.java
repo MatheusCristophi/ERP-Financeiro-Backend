@@ -65,6 +65,22 @@ public class UsuarioServico implements UserDetailsService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public UsuarioResposta buscarUsuario(UUID funcionarioId, UUID usuarioId, UUID empresaId) {
+        Usuario funcionario = usuarioRepositorio.findById(funcionarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        boolean pertenceAEmpresa = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(funcionarioId, empresaId);
+
+        if(!pertenceAEmpresa) {
+            throw new SemPermissaoException(funcionario.getNome());
+        }
+
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuario"));
+
+        return UsuarioResposta.from(usuario);
+    }
 
     @Transactional
     public UsuarioResposta criarUsuario(UUID usuarioId,
