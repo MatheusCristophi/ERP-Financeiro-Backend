@@ -28,7 +28,7 @@ public class UsuarioControlador {
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 
-    @GetMapping("/{empresaId}/{usuarioId}")
+    @GetMapping
     public ResponseEntity<UsuarioResposta> buscarUsuario(@AuthenticationPrincipal Usuario usuario,
                                                          @RequestParam UUID empresaId,
                                                          @RequestParam UUID usuarioId) {
@@ -43,5 +43,15 @@ public class UsuarioControlador {
                                                         @RequestParam UUID empresaId) {
         UsuarioResposta resposta = this.usuarioServico.criarUsuario(usuario.getUsuarioId(), requisicao, roles, empresaId);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{roles}")
+    public ResponseEntity<UsuarioResposta> atualizarUsuario(@AuthenticationPrincipal Usuario usuario,
+                                                            @RequestBody UsuarioRequisicao requisicao,
+                                                            @PathVariable UsuarioRoles roles,
+                                                            @RequestParam UUID usuarioId,
+                                                            @RequestParam UUID empresaId){
+        UsuarioResposta resposta = usuarioServico.atualizarUsuario(usuario.getUsuarioId(),usuarioId, roles, requisicao, empresaId);
+        return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 }

@@ -129,8 +129,8 @@ public class UsuarioServico implements UserDetailsService {
     @Transactional
     public UsuarioResposta atualizarUsuario(UUID funcionarioId,
                                             UUID usuarioId,
+                                            UsuarioRoles roles,
                                             UsuarioRequisicao requisicao,
-                                            UsuarioRoles role,
                                             UUID empresaId
     ) {
         Usuario funcionario = usuarioRepositorio.findById(funcionarioId)
@@ -152,6 +152,8 @@ public class UsuarioServico implements UserDetailsService {
         if(requisicao.email() != null) usuario.setEmail(requisicao.email());
 
         if(requisicao.nome() != null) usuario.setNome(requisicao.nome());
+
+        vinculo.setRole(roles);
 
         if(requisicao.senha() != null) usuario.setSenha(encoder.encode(requisicao.senha()));
 
