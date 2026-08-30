@@ -51,7 +51,15 @@ public class UsuarioControlador {
                                                             @PathVariable UsuarioRoles roles,
                                                             @RequestParam UUID usuarioId,
                                                             @RequestParam UUID empresaId){
-        UsuarioResposta resposta = usuarioServico.atualizarUsuario(usuario.getUsuarioId(),usuarioId, roles, requisicao, empresaId);
+        UsuarioResposta resposta = this.usuarioServico.atualizarUsuario(usuario.getUsuarioId(),usuarioId, roles, requisicao, empresaId);
         return new ResponseEntity<>(resposta, HttpStatus.OK);
+    }
+
+    @PatchMapping
+    public ResponseEntity<Void> desativarUsuario(@AuthenticationPrincipal Usuario usuario,
+                                                            @RequestParam UUID usuarioId,
+                                                            @RequestParam UUID empresaId) {
+        this.usuarioServico.desativarUsuario(usuario.getUsuarioId(), usuarioId, empresaId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
