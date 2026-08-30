@@ -28,4 +28,12 @@ public class UsuarioControlador {
         List<UsuarioResposta> resposta = usuarioServico.buscarUsuarios(usuario.getUsuarioId(), empresaId);
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
+
+    @GetMapping("/{usuarioId}/{empresaId}")
+    public ResponseEntity<UsuarioResposta> buscarUsuario(@AuthenticationPrincipal Usuario usuario,
+                                                         @PathVariable UUID usuarioId,
+                                                         @PathVariable UUID empresaId) {
+        UsuarioResposta resposta = usuarioServico.buscarUsuario(usuario.getUsuarioId(), usuarioId, empresaId);
+        return new ResponseEntity<>(resposta, HttpStatus.OK);
+    }
 }
