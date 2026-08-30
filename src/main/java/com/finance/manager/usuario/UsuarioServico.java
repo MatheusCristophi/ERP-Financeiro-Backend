@@ -61,6 +61,7 @@ public class UsuarioServico implements UserDetailsService {
 
         return UsuarioResposta.of(empresaFuncionarios.stream()
                 .map(UsuarioEmpresa::getUsuarioId)
+                .filter(usuario -> usuario.isAtivo())
                 .toList()
         );
     }
