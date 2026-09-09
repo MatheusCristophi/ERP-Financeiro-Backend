@@ -12,6 +12,7 @@ import com.finance.manager.usuarioempresa.UsuarioEmpresaRepositorio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -50,5 +51,20 @@ public class CategoriaServico {
         return CategoriaResposta.from(categoria);
     }
 
+    public List<CategoriaResposta> buscarCategoria(UUID empresaId, UUID usuarioId) {
+        Empresas empresaAtual = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
+        Usuario usuarioAtual = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuarioAtual.getUsuarioId(), empresaAtual.getEmpresaId());
+
+        if(vinculo.getEmpresaId().getEmpresaId() != empresaId || vinculo.getUsuarioId().getUsuarioId() != usuarioId)
+            throw new RuntimeException("Vinculo não encontrado entre o usuário "+usuarioAtual.getNome()+" e a empresa "+empresaAtual.getDescricao());
+
+        List<Categoria> resposta = categoriaRepositorio.findAllByCategoriaEmpresa(empresaAtual);
+
+        return CategoriaResposta.of(resposta);
+    }
 }
