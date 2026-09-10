@@ -45,7 +45,7 @@ public class CategoriaServico {
         Categoria categoria = new Categoria();
         categoria.setDescricao(requisicao.descricao());
         categoria.setStatus(requisicao.status());
-        categoria.setTipo(requisicao.Tipo());
+        categoria.setTipo(requisicao.tipo());
         categoria.setCategoriaEmpresa(empresaAtual);
 
         return CategoriaResposta.from(categoria);
@@ -84,5 +84,29 @@ public class CategoriaServico {
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
 
         return CategoriaResposta.from(resposta);
+    }
+
+    public CategoriaResposta atualizarCategoria(UUID empresaId, UUID usuarioId, CategoriaRequisicao requisicao, UUID categoriaId) {
+        Empresas empresaAtual = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        Usuario usuarioAtual = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuarioAtual.getUsuarioId(), empresaAtual.getEmpresaId());
+
+        if(vinculo.getEmpresaId().getEmpresaId() != empresaId || vinculo.getUsuarioId().getUsuarioId() != usuarioId)
+            throw new RuntimeException("Vinculo não encontrado entre o usuário "+usuarioAtual.getNome()+" e a empresa "+empresaAtual.getDescricao());
+
+        Categoria categoria = categoriaRepositorio.findById(categoriaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
+
+        if(!requisicao.descricao().isEmpty()) categoria.setDescricao(requisicao.descricao());
+
+        if(requisicao.tipo() != null) categoria.setTipo(requisicao.tipo());
+
+        if(!requisicao.status()) categoria.setStatus(false);
+
+        return CategoriaResposta.from(categoria);
     }
 }
