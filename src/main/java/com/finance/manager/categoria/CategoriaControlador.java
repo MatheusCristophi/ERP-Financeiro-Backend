@@ -3,6 +3,7 @@ package com.finance.manager.categoria;
 import com.finance.manager.categoria.dto.CategoriaRequisicao;
 import com.finance.manager.categoria.dto.CategoriaResposta;
 import com.finance.manager.usuario.Usuario;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +33,15 @@ public class CategoriaControlador {
         return ResponseEntity.ok(resposta);
     }
 
-    @PostMapping()
+    @PostMapping
     public ResponseEntity<CategoriaResposta> criarCategoria(@AuthenticationPrincipal Usuario usuario, @RequestParam UUID empresaId, @RequestBody CategoriaRequisicao requisicao) {
         CategoriaResposta resposta = categoriaServico.criarCategoria(empresaId, usuario.getUsuarioId(), requisicao);
-        return ResponseEntity.ok(resposta);
+        return new ResponseEntity<>(resposta,HttpStatus.CREATED);
+    }
+
+    @PutMapping("{categoriaId}")
+    public ResponseEntity<CategoriaResposta> atualizarCategoria(@AuthenticationPrincipal Usuario usuario, @RequestParam UUID empresaId, @RequestBody CategoriaRequisicao requisicao, @PathVariable UUID categoriaId) {
+        CategoriaResposta resposta = categoriaServico.atualizarCategoria(empresaId, usuario.getUsuarioId(), requisicao, categoriaId);
+        return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 }
