@@ -44,4 +44,10 @@ public class CategoriaControlador {
         CategoriaResposta resposta = categoriaServico.atualizarCategoria(empresaId, usuario.getUsuarioId(), requisicao, categoriaId);
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
+
+    @PatchMapping("/{categoriaId}")
+    public ResponseEntity<Void> desativarCategoria(@AuthenticationPrincipal Usuario usuario, @RequestParam UUID empresaId, @PathVariable UUID categoriaId) {
+        categoriaServico.desativarCategoria(empresaId, usuario.getUsuarioId(), categoriaId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
