@@ -178,17 +178,24 @@ public class UsuarioServico implements UserDetailsService {
 
     @Transactional
     public UsuarioResposta desativarUsuario(UUID funcionarioId, UUID usuarioId, UUID empresaId) {
-        Usuario usuario = usuarioRepositorio.findById(usuarioId)
-                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
-
-        List<UsuarioEmpresa> usuarioEmpresa = usuarioEmpresaRepositorio.findAllByUsuarioIdAndEmpresaId(funcionarioId, empresaId);
-
         Usuario funcionario = usuarioRepositorio.findById(funcionarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Funcionário"));
 
-        if (!funcionario.getUsuarioEmpresas().equals(usuarioEmpresa)) throw new SemPermissaoException(usuario.getEmail());
+        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(funcionarioId, empresaId);
 
-        if(usuarioEmpresa.isEmpty()) throw new SemPermissaoException(funcionario.getEmail());
+        Empresas empresa = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        if (!existeVinculo) throw new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao());
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresa.getEmpresaId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao()));
+
+        if(!vinculo.getRole().equals(UsuarioRoles.DONO) || !vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA))
+            throw new SemPermissaoException(funcionario.getNome());
+
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
         usuario.setAtivo(false);
 
