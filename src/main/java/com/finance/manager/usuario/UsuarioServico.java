@@ -1,5 +1,6 @@
 package com.finance.manager.usuario;
 
+import com.finance.manager.excecoes.VinculoNaoEncontrado;
 import com.finance.manager.usuario.dto.UsuarioRequisicao;
 import com.finance.manager.usuario.dto.UsuarioResposta;
 import com.finance.manager.empresa.Empresas;
@@ -92,14 +93,22 @@ public class UsuarioServico implements UserDetailsService {
         Usuario funcionario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuarioId, empresaId);
+        Empresas empresa = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        if(vinculo == null) {
-            throw new NaoEncontradoException("o Usuário");
+        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresa.getEmpresaId());
+
+        if(!existeVinculo) {
+            throw new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao());
         }
 
-        if(vinculo.getRole().equals(UsuarioRoles.DONO) ||
-                vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA)
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresa.getEmpresaId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao()));
+
+        if(
+                !vinculo.getRole().equals(UsuarioRoles.DONO) ||
+                !vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA
+                )
         ) throw new SemPermissaoException(funcionario.getNome());
 
         Usuario usuario = new Usuario();
@@ -112,9 +121,6 @@ public class UsuarioServico implements UserDetailsService {
         usuario.setEmail(requisicao.email().toLowerCase());
         usuario.setSenha(encoder.encode(requisicao.senha()));
         usuarioRepositorio.save(usuario);
-
-        Empresas empresa = empresaRepositorio.findById(empresaId)
-                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
         UsuarioEmpresa usuarioEmpresa = new UsuarioEmpresa();
 
