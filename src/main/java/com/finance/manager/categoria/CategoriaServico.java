@@ -8,7 +8,6 @@ import com.finance.manager.excecoes.NaoEncontradoException;
 import com.finance.manager.excecoes.VinculoNaoEncontrado;
 import com.finance.manager.usuario.Usuario;
 import com.finance.manager.usuario.UsuarioRepositorio;
-import com.finance.manager.usuarioempresa.UsuarioEmpresa;
 import com.finance.manager.usuarioempresa.UsuarioEmpresaRepositorio;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
