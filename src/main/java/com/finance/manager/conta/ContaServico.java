@@ -14,6 +14,7 @@ import com.finance.manager.usuarioempresa.UsuarioEmpresaRepositorio;
 import com.finance.manager.usuarioempresa.UsuarioRoles;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -57,5 +58,21 @@ public class ContaServico {
         conta.setContaEmpresa(empresa);
 
         return ContaResposta.from(conta);
+    }
+
+    public List<ContaResposta> buscarTodasAsContas(UUID usuarioId, UUID empresaId) {
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresa = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId());
+
+        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao());
+
+        List<Conta> contas = contaRepositorio.findAll();
+
+        return ContaResposta.of(contas);
     }
 }
