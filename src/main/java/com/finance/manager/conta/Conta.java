@@ -37,4 +37,7 @@ public class Conta {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "conta_empresa")
     private Empresas contaEmpresa;
+
+    @Column(name = "conta_status", nullable = false)
+    private boolean status = true;
 }

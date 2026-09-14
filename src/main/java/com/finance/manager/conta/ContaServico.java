@@ -121,4 +121,27 @@ public class ContaServico {
 
         return ContaResposta.from(conta);
     }
+
+    public void desativarConta(UUID usuarioId, UUID empresaId, UUID contaId) {
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresa = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId());
+
+        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao());
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao()));
+
+        if(!vinculo.getRole().equals(UsuarioRoles.DONO) || !vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA))
+            throw new SemPermissaoException(usuario.getNome());
+
+        Conta conta = contaRepositorio.findById(contaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Conta"));
+
+        conta.setStatus(false);
+    }
 }

@@ -104,6 +104,7 @@ CREATE TABLE conta_tabela (
     conta_movimentacao conta_movimentacao NOT NULL,
     conta_numero VARCHAR(15) NOT NULL UNIQUE,
     conta_agencia VARCHAR(10) NOT NULL,
+    conta_status BOOLEAN NOT NULL DEFAULT true,
     conta_empresa UUID NOT NULL REFERENCES empresa_tabela(empresa_id),
     CONSTRAINT uk_conta_descricao_conta_empresa UNIQUE(conta_descricao, conta_empresa)
 );
