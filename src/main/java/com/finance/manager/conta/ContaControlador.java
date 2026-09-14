@@ -37,4 +37,10 @@ public class ContaControlador {
         ContaResposta resposta = contaServico.criarConta(usuario.getUsuarioId(), empresaId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
+
+    @PutMapping("{contaId}")
+    public ResponseEntity<ContaResposta> atualizarConta(@AuthenticationPrincipal Usuario usuario, @RequestParam UUID empresaId, @PathVariable UUID contaId, @RequestBody ContaRequisicao requisicao) {
+        ContaResposta resposta = contaServico.atualizarConta(usuario.getUsuarioId(), empresaId, contaId, requisicao);
+        return new ResponseEntity<>(resposta, HttpStatus.OK);
+    }
 }
