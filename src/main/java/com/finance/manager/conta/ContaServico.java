@@ -92,4 +92,33 @@ public class ContaServico {
 
         return ContaResposta.from(conta);
     }
+
+    public ContaResposta atualizarConta(UUID usuarioId, UUID empresaId, UUID contaId, ContaRequisicao requisicao) {
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresa = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId());
+
+        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao());
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao()));
+
+        if(!vinculo.getRole().equals(UsuarioRoles.DONO) || !vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA))
+            throw new SemPermissaoException(usuario.getNome());
+
+        Conta conta = contaRepositorio.findById(contaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Conta"));
+
+        if(requisicao.descricao() != null) conta.setDescricao(requisicao.descricao());
+        if(requisicao.numero() != null) conta.setNumero(requisicao.numero());
+        if(requisicao.agencia() != null) conta.setAgencia(requisicao.agencia());
+        if(requisicao.contaTipo() != null) conta.setContaTipo(requisicao.contaTipo());
+        if(requisicao.movimentacaoTipo() != null) conta.setContaMovimentacao(requisicao.movimentacaoTipo());
+
+        return ContaResposta.from(conta);
+    }
 }
