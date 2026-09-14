@@ -23,31 +23,31 @@ public class CategoriaControlador {
 
     @GetMapping
     public ResponseEntity<List<CategoriaResposta>> buscarTodasCategorias(@AuthenticationPrincipal Usuario usuario, @RequestParam UUID empresaId) {
-        List<CategoriaResposta> resposta = categoriaServico.buscarTodasCategorias(empresaId, usuario.getUsuarioId());
+        List<CategoriaResposta> resposta = this.categoriaServico.buscarTodasCategorias(empresaId, usuario.getUsuarioId());
         return ResponseEntity.ok(resposta);
     }
 
     @GetMapping("{categoriaId}")
     public ResponseEntity<CategoriaResposta> buscarCategoria(@AuthenticationPrincipal Usuario usuario, @RequestParam UUID empresaId, @PathVariable UUID categoriaId) {
-        CategoriaResposta resposta = categoriaServico.buscarCategoria(empresaId, usuario.getUsuarioId(), categoriaId);
+        CategoriaResposta resposta = this.categoriaServico.buscarCategoria(empresaId, usuario.getUsuarioId(), categoriaId);
         return ResponseEntity.ok(resposta);
     }
 
     @PostMapping
     public ResponseEntity<CategoriaResposta> criarCategoria(@AuthenticationPrincipal Usuario usuario, @RequestParam UUID empresaId, @RequestBody CategoriaRequisicao requisicao) {
-        CategoriaResposta resposta = categoriaServico.criarCategoria(empresaId, usuario.getUsuarioId(), requisicao);
+        CategoriaResposta resposta = this.categoriaServico.criarCategoria(empresaId, usuario.getUsuarioId(), requisicao);
         return new ResponseEntity<>(resposta,HttpStatus.CREATED);
     }
 
     @PutMapping("{categoriaId}")
     public ResponseEntity<CategoriaResposta> atualizarCategoria(@AuthenticationPrincipal Usuario usuario, @RequestParam UUID empresaId, @RequestBody CategoriaRequisicao requisicao, @PathVariable UUID categoriaId) {
-        CategoriaResposta resposta = categoriaServico.atualizarCategoria(empresaId, usuario.getUsuarioId(), requisicao, categoriaId);
+        CategoriaResposta resposta = this.categoriaServico.atualizarCategoria(empresaId, usuario.getUsuarioId(), requisicao, categoriaId);
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 
     @PatchMapping("/{categoriaId}")
     public ResponseEntity<Void> desativarCategoria(@AuthenticationPrincipal Usuario usuario, @RequestParam UUID empresaId, @PathVariable UUID categoriaId) {
-        categoriaServico.desativarCategoria(empresaId, usuario.getUsuarioId(), categoriaId);
+        this.categoriaServico.desativarCategoria(empresaId, usuario.getUsuarioId(), categoriaId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
