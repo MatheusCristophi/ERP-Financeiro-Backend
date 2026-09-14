@@ -75,4 +75,21 @@ public class ContaServico {
 
         return ContaResposta.of(contas);
     }
+
+    public ContaResposta buscarConta(UUID usuarioId, UUID empresaId, UUID contaId) {
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresa = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId());
+
+        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao());
+
+        Conta conta = contaRepositorio.findById(contaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Conta"));
+
+        return ContaResposta.from(conta);
+    }
 }
