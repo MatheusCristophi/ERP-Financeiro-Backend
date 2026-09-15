@@ -82,6 +82,8 @@ public class CategoriaServico {
         Categoria resposta = categoriaRepositorio.findById(categoriaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
 
+        if(resposta.getCategoriaEmpresa() != empresaAtual) throw new NaoEncontradoException("a Categoria");
+
         return CategoriaResposta.from(resposta);
     }
 
@@ -99,6 +101,8 @@ public class CategoriaServico {
 
         Categoria categoria = categoriaRepositorio.findById(categoriaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
+
+        if(categoria.getCategoriaEmpresa() != empresaAtual) throw new NaoEncontradoException("a Categoria");
 
         if(!requisicao.descricao().isEmpty()) categoria.setDescricao(requisicao.descricao());
 
@@ -123,6 +127,8 @@ public class CategoriaServico {
 
         Categoria categoria = categoriaRepositorio.findById(categoriaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
+
+        if(categoria.getCategoriaEmpresa() != empresaAtual) throw new NaoEncontradoException("a Categoria");
 
         categoria.setStatus(false);
     }
