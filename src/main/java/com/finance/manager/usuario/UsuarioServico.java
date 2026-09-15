@@ -58,7 +58,7 @@ public class UsuarioServico implements UserDetailsService {
             throw new SemPermissaoException(usuarioLogado.getNome());
         }
 
-        List<UsuarioEmpresa> empresaFuncionarios = usuarioEmpresaRepositorio.findAllByEmpresaId(empresaId);
+        List<UsuarioEmpresa> empresaFuncionarios = usuarioEmpresaRepositorio.findByEmpresaId_EmpresaId(empresaId);
 
         return UsuarioResposta.of(empresaFuncionarios.stream()
                 .map(UsuarioEmpresa::getUsuarioId)
@@ -72,11 +72,9 @@ public class UsuarioServico implements UserDetailsService {
         Usuario funcionario = usuarioRepositorio.findById(funcionarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        boolean pertenceAEmpresa = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(funcionarioId, empresaId);
+        boolean pertenceAEmpresa = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresaId);
 
-        if(!pertenceAEmpresa) {
-            throw new SemPermissaoException(funcionario.getNome());
-        }
+        if(!pertenceAEmpresa) throw new SemPermissaoException(funcionario.getNome());
 
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuario"));
@@ -96,20 +94,12 @@ public class UsuarioServico implements UserDetailsService {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresa.getEmpresaId());
-
-        if(!existeVinculo) {
-            throw new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao());
-        }
-
         UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresa.getEmpresaId())
                 .orElseThrow(() -> new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao()));
 
-        if(
-                !vinculo.getRole().equals(UsuarioRoles.DONO) ||
-                !vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA
-                )
-        ) throw new SemPermissaoException(funcionario.getNome());
+        boolean ehDonoOuAdmin = vinculo.getRole() == UsuarioRoles.DONO || vinculo.getRole() == UsuarioRoles.ADMINISTRADOR_DO_SISTEMA;
+
+        if(!ehDonoOuAdmin) throw new SemPermissaoException(funcionario.getNome());
 
         Usuario usuario = new Usuario();
 
@@ -145,12 +135,6 @@ public class UsuarioServico implements UserDetailsService {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresa.getEmpresaId());
-
-        if(!existeVinculo) {
-            throw new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao());
-        }
-
         UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresa.getEmpresaId())
                 .orElseThrow(() -> new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao()));
 
@@ -159,19 +143,17 @@ public class UsuarioServico implements UserDetailsService {
 
         boolean usuarioProprio = funcionario.getUsuarioId().equals(usuario.getUsuarioId());
 
-        if(
-                !vinculo.getRole().equals(UsuarioRoles.DONO) ||
-                !vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA) ||
-                !usuarioProprio
-        ) throw new SemPermissaoException(funcionario.getNome());
+        boolean ehDonoOuAdmin = vinculo.getRole() == UsuarioRoles.DONO || vinculo.getRole() == UsuarioRoles.ADMINISTRADOR_DO_SISTEMA;
+
+        if(!usuarioProprio && !ehDonoOuAdmin) throw new SemPermissaoException(funcionario.getNome());
 
         if(requisicao.email() != null) usuario.setEmail(requisicao.email());
 
         if(requisicao.nome() != null) usuario.setNome(requisicao.nome());
 
-        vinculo.setRole(roles);
-
         if(requisicao.senha() != null) usuario.setSenha(encoder.encode(requisicao.senha()));
+
+        if(!usuarioProprio && ehDonoOuAdmin && roles != null) vinculo.setRole(roles);
 
         return UsuarioResposta.from(usuario);
     }
@@ -181,18 +163,15 @@ public class UsuarioServico implements UserDetailsService {
         Usuario funcionario = usuarioRepositorio.findById(funcionarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Funcionário"));
 
-        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(funcionarioId, empresaId);
-
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
-
-        if (!existeVinculo) throw new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao());
 
         UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresa.getEmpresaId())
                 .orElseThrow(() -> new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao()));
 
-        if(!vinculo.getRole().equals(UsuarioRoles.DONO) || !vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA))
-            throw new SemPermissaoException(funcionario.getNome());
+        boolean ehDonoOuAdmin = vinculo.getRole() == UsuarioRoles.DONO || vinculo.getRole() == UsuarioRoles.ADMINISTRADOR_DO_SISTEMA;
+
+        if(!ehDonoOuAdmin) throw new SemPermissaoException(funcionario.getNome());
 
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
