@@ -32,9 +32,8 @@ public class EmpresaServico {
         Usuario dono = this.usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Email"));
 
-        if(usuarioEmpresaRepositorio.findByUsuarioId(dono.getUsuarioId()).getRole() != UsuarioRoles.DONO) {
+        if(usuarioEmpresaRepositorio.findByUsuarioId(dono.getUsuarioId()).getRole() != UsuarioRoles.DONO)
             throw new SemPermissaoException(dono.getNome());
-        }
 
         Empresas empresas = new Empresas();
 
@@ -66,7 +65,10 @@ public class EmpresaServico {
         Empresas empresa = this.empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("as empresas"));
 
-        if(!empresa.getEmpresaDono().getUsuarioId().equals(usuarioId)) throw new SemPermissaoException(usuario.getNome());
+        boolean possuiAcesso = usuario.getUsuarioEmpresas().stream()
+                .anyMatch(vinculo -> vinculo.getEmpresaId().getEmpresaId().equals(empresa.getEmpresaId()));
+
+        if (!possuiAcesso) throw new SemPermissaoException(usuario.getNome());
 
         return EmpresaResposta.from(empresa);
     }
@@ -78,6 +80,9 @@ public class EmpresaServico {
 
         Empresas empresa = this.empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a empresa"));
+
+        if(usuarioEmpresaRepositorio.findByUsuarioId(usuario.getUsuarioId()).getRole() != UsuarioRoles.DONO)
+            throw new SemPermissaoException(usuario.getNome());
 
         if(!empresa.getEmpresaDono().getUsuarioId().equals(usuario.getUsuarioId())) throw new SemPermissaoException(usuario.getNome());
 
@@ -97,6 +102,9 @@ public class EmpresaServico {
 
         Empresas empresas = this.empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a empresa"));
+
+        if(usuarioEmpresaRepositorio.findByUsuarioId(usuario.getUsuarioId()).getRole() != UsuarioRoles.DONO)
+            throw new SemPermissaoException(usuario.getNome());
 
         if (!empresas.getEmpresaDono().getUsuarioId().equals(usuario.getUsuarioId())) throw new SemPermissaoException(usuario.getNome());
 
