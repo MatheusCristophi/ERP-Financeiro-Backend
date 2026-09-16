@@ -39,7 +39,7 @@ public class CategoriaServico {
 
         boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getUsuarioId(), empresaAtual.getEmpresaId());
 
-        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getNome(), empresaAtual.getDescricao());
+        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getUsuarioId().toString(), empresaAtual.getEmpresaId().toString());
 
         Categoria categoria = new Categoria();
         categoria.setDescricao(requisicao.descricao());
@@ -60,7 +60,7 @@ public class CategoriaServico {
 
         boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getUsuarioId(), empresaAtual.getEmpresaId());
 
-        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getNome(), empresaAtual.getDescricao());
+        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getUsuarioId().toString(), empresaAtual.getEmpresaId().toString());
 
         List<Categoria> resposta = categoriaRepositorio.findAllByCategoriaEmpresa(empresaAtual);
 
@@ -77,12 +77,12 @@ public class CategoriaServico {
 
         boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getUsuarioId(), empresaAtual.getEmpresaId());
 
-        if(!vinculo) throw new RuntimeException("Vinculo não encontrado entre o usuário "+usuarioAtual.getNome()+" e a empresa "+empresaAtual.getDescricao());
+        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getUsuarioId().toString(), empresaAtual.getEmpresaId().toString());
 
         Categoria resposta = categoriaRepositorio.findById(categoriaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
 
-        if(resposta.getCategoriaEmpresa() != empresaAtual) throw new NaoEncontradoException("a Categoria");
+        if(resposta.getCategoriaEmpresa().equals(empresaAtual)) throw new NaoEncontradoException("a Categoria");
 
         return CategoriaResposta.from(resposta);
     }
@@ -97,12 +97,12 @@ public class CategoriaServico {
 
         boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getUsuarioId(), empresaAtual.getEmpresaId());
 
-        if(!vinculo) throw new RuntimeException("Vinculo não encontrado entre o usuário "+usuarioAtual.getNome()+" e a empresa "+empresaAtual.getDescricao());
+        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getUsuarioId().toString(), empresaAtual.getEmpresaId().toString());
 
         Categoria categoria = categoriaRepositorio.findById(categoriaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
 
-        if(categoria.getCategoriaEmpresa() != empresaAtual) throw new NaoEncontradoException("a Categoria");
+        if(categoria.getCategoriaEmpresa().equals(empresaAtual)) throw new NaoEncontradoException("a Categoria");
 
         if(!requisicao.descricao().isEmpty()) categoria.setDescricao(requisicao.descricao());
 
@@ -123,12 +123,12 @@ public class CategoriaServico {
 
         boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getUsuarioId(), empresaAtual.getEmpresaId());
 
-        if(!vinculo) throw new RuntimeException("Vinculo não encontrado entre o usuário "+usuarioAtual.getNome()+" e a empresa "+empresaAtual.getDescricao());
+        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getUsuarioId().toString(), empresaAtual.getEmpresaId().toString());
 
         Categoria categoria = categoriaRepositorio.findById(categoriaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
 
-        if(categoria.getCategoriaEmpresa() != empresaAtual) throw new NaoEncontradoException("a Categoria");
+        if(!categoria.getCategoriaEmpresa().equals(empresaAtual)) throw new NaoEncontradoException("a Categoria");
 
         categoria.setStatus(false);
     }

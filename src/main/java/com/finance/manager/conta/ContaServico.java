@@ -39,14 +39,10 @@ public class ContaServico {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioId, empresaId);
-
-        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao());
-
         UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId())
-                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao()));
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getUsuarioId().toString(), empresa.getEmpresaId().toString()));
 
-        if(!vinculo.getRole().equals(UsuarioRoles.DONO) || !vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA)) throw new SemPermissaoException(usuario.getNome());
+        if(vinculo.getRole() != UsuarioRoles.DONO && vinculo.getRole() != UsuarioRoles.ADMINISTRADOR_DO_SISTEMA) throw new SemPermissaoException(usuario.getNome());
 
         Conta conta = new Conta();
 
@@ -69,9 +65,9 @@ public class ContaServico {
 
         boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId());
 
-        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao());
+        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getUsuarioId().toString(), empresa.getEmpresaId().toString());
 
-        List<Conta> contas = contaRepositorio.findAll();
+        List<Conta> contas = contaRepositorio.findAllByContaEmpresa(empresa);
 
         return ContaResposta.of(contas);
     }
@@ -85,10 +81,12 @@ public class ContaServico {
 
         boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId());
 
-        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao());
+        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getUsuarioId().toString(), empresa.getEmpresaId().toString());
 
         Conta conta = contaRepositorio.findById(contaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Conta"));
+
+        if(!conta.getContaEmpresa().equals(empresa)) throw new NaoEncontradoException("a Empresa");
 
         return ContaResposta.from(conta);
     }
@@ -100,18 +98,16 @@ public class ContaServico {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId());
-
-        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao());
-
         UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId())
                 .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao()));
 
-        if(!vinculo.getRole().equals(UsuarioRoles.DONO) || !vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA))
+        if(vinculo.getRole() != UsuarioRoles.DONO && vinculo.getRole() != UsuarioRoles.ADMINISTRADOR_DO_SISTEMA)
             throw new SemPermissaoException(usuario.getNome());
 
         Conta conta = contaRepositorio.findById(contaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Conta"));
+
+        if(!conta.getContaEmpresa().equals(empresa)) throw new NaoEncontradoException("a Conta");
 
         if(requisicao.descricao() != null) conta.setDescricao(requisicao.descricao());
         if(requisicao.numero() != null) conta.setNumero(requisicao.numero());
@@ -136,7 +132,7 @@ public class ContaServico {
         UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId())
                 .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao()));
 
-        if(!vinculo.getRole().equals(UsuarioRoles.DONO) || !vinculo.getRole().equals(UsuarioRoles.ADMINISTRADOR_DO_SISTEMA))
+        if(vinculo.getRole() != UsuarioRoles.DONO && vinculo.getRole() != UsuarioRoles.ADMINISTRADOR_DO_SISTEMA)
             throw new SemPermissaoException(usuario.getNome());
 
         Conta conta = contaRepositorio.findById(contaId)

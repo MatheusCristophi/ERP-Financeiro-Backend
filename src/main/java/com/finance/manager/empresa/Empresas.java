@@ -27,6 +27,8 @@ public class Empresas {
     @Column(name = "empresa_id")
     private UUID empresaId;
 
+    @Column(name = "empresa_cnpj" ,nullable = false, unique = true)
+    private String cnpj;
 
     @Column(name = "empresa_descricao", nullable = false)
     private String descricao;

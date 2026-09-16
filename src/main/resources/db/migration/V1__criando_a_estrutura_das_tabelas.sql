@@ -72,6 +72,7 @@ CREATE TABLE usuario_tabela (
 CREATE TABLE empresa_tabela (
     empresa_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     empresa_descricao VARCHAR NOT NULL,
+    empresa_cnpj VARCHAR NOT NULL,
     empresa_saldo NUMERIC(13, 2) DEFAULT 0,
     empresa_tipo empresa_tipo_atividade NOT NULL,
     empresa_regime empresa_regime_tibutario NOT NULL,
