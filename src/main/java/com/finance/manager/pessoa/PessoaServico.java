@@ -51,8 +51,8 @@ public class PessoaServico {
         pessoa.setCpf(requisicao.cpf());
         pessoa.setCnpj(requisicao.cnpj());
         pessoa.setTipo(requisicao.tipo());
-        pessoa.setPessoaEmpresa(empresa);
         pessoa.getPessoaUsuarios().add(usuario);
+        pessoa.setPessoaEmpresa(empresa);
 
         pessoaRepositorio.save(pessoa);
 
