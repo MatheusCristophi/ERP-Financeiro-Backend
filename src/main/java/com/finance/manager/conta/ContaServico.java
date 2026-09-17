@@ -53,6 +53,8 @@ public class ContaServico {
         conta.setContaTipo(requisicao.contaTipo());
         conta.setContaEmpresa(empresa);
 
+        contaRepositorio.save(conta);
+
         return ContaResposta.from(conta);
     }
 

@@ -47,6 +47,8 @@ public class CategoriaServico {
         categoria.setTipo(requisicao.tipo());
         categoria.setCategoriaEmpresa(empresaAtual);
 
+        categoriaRepositorio.save(categoria);
+
         return CategoriaResposta.from(categoria);
     }
 

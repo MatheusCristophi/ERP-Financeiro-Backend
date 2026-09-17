@@ -5,6 +5,7 @@ import com.finance.manager.conta.Conta;
 import com.finance.manager.lancamento.Lancamento;
 import com.finance.manager.usuario.Usuario;
 import com.finance.manager.usuarioempresa.UsuarioEmpresa;
+import com.finance.manager.pessoa.Pessoa;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -67,6 +68,8 @@ public class Empresas {
     )
     private List<Conta> empresaContas;
 
+    @OneToMany(mappedBy = "pessoaEmpresa", fetch = FetchType.LAZY)
+    private List<Pessoa> empresaPessoa;
 
     @OneToMany(mappedBy = "categoriaEmpresa",
                fetch = FetchType.LAZY,
