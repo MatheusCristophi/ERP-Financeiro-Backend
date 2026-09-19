@@ -22,7 +22,7 @@ public class SecurityServico {
     public String logar(SecurityRequisicao requisicao) {
         UsernamePasswordAuthenticationToken userAndPass = new UsernamePasswordAuthenticationToken(requisicao.email(), requisicao.senha());
         Authentication auth = authenticationManager.getObject().authenticate(userAndPass);
-        UserDetails details = (UserDetails) auth;
+        UserDetails details = (UserDetails) auth.getPrincipal();
         var token = tokenServico.gerarToken(details);
 
         return token;
