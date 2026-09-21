@@ -4,6 +4,7 @@ import com.finance.manager.empresa.Empresas;
 import com.finance.manager.usuario.Usuario;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.util.UUID;
 
@@ -20,13 +21,14 @@ public class UsuarioEmpresa {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
-    private Usuario usuarioId;
+    private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "empresa_id", nullable = false)
-    private Empresas empresaId;
+    private Empresas empresa;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "usuario_role", nullable = false)
+    @ColumnTransformer(write = "?::usuarios_roles")
     private UsuarioRoles role;
 }

@@ -2,7 +2,9 @@ package com.finance.manager.empresa;
 
 import com.finance.manager.empresa.dto.EmpresaRequisicao;
 import com.finance.manager.empresa.dto.EmpresaResposta;
+import com.finance.manager.excecoes.VinculoNaoEncontrado;
 import com.finance.manager.usuario.Usuario;
+import com.finance.manager.usuarioempresa.UsuarioEmpresa;
 import com.finance.manager.usuarioempresa.UsuarioRoles;
 import com.finance.manager.excecoes.NaoEncontradoException;
 import com.finance.manager.excecoes.SemPermissaoException;
@@ -30,27 +32,34 @@ public class EmpresaServico {
     @Transactional
     public EmpresaResposta criarEmpresa(EmpresaRequisicao empresaRequisicao, UUID usuarioId) {
         Usuario dono = this.usuarioRepositorio.findById(usuarioId)
-                .orElseThrow(() -> new NaoEncontradoException("o Email"));
-
-        if(usuarioEmpresaRepositorio.findByUsuarioId(dono.getUsuarioId()).getRole() != UsuarioRoles.DONO)
-            throw new SemPermissaoException(dono.getNome());
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
         Empresas empresas = new Empresas();
 
         empresas.setDescricao(empresaRequisicao.descricao());
+        empresas.setCnpj(empresaRequisicao.cnpj());
         empresas.setEmpresaTipo(empresaRequisicao.empresaTiposAtividade());
         empresas.setEmpresaRegime(empresaRequisicao.empresaRegimeTributario());
         empresas.setEmpresaNaturezaPessoa(empresaRequisicao.empresaNaturezaPessoa());
         empresas.setEmpresaDono(dono);
 
         this.empresaRepositorio.save(empresas);
+
+        UsuarioEmpresa vinculo = new UsuarioEmpresa();
+
+        vinculo.setEmpresa(empresas);
+        vinculo.setUsuario(dono);
+        vinculo.setRole(UsuarioRoles.DONO);
+
+        this.usuarioEmpresaRepositorio.save(vinculo);
+
         return EmpresaResposta.from(empresas);
     }
 
     @Transactional(readOnly = true)
     public List<EmpresaResposta> buscarTodasEmpresas(UUID usuarioId){
         Usuario usuario = this.usuarioRepositorio.findById(usuarioId)
-                .orElseThrow(() -> new NaoEncontradoException("as Empresas"));
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
         List<Empresas> empresas = this.empresaRepositorio.findAllByEmpresaDono(usuario);
 
@@ -60,15 +69,18 @@ public class EmpresaServico {
     @Transactional(readOnly = true)
     public EmpresaResposta buscarEmpresaPorId(UUID usuarioId, UUID empresaId) {
         Usuario usuario = this.usuarioRepositorio.findById(usuarioId)
-                .orElseThrow(() -> new NaoEncontradoException("as empresas"));
+                .orElseThrow(() -> new NaoEncontradoException("o usuário"));
 
         Empresas empresa = this.empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("as empresas"));
 
-        boolean possuiAcesso = usuario.getUsuarioEmpresas().stream()
-                .anyMatch(vinculo -> vinculo.getEmpresaId().getEmpresaId().equals(empresa.getEmpresaId()));
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuarioId, empresaId)
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuarioId, empresaId));
 
-        if (!possuiAcesso) throw new SemPermissaoException(usuario.getNome());
+        if(!vinculo.getEmpresa().getId().equals(empresa.getId())) throw new SemPermissaoException(usuario.getNome());
+
+        if (vinculo.getRole() != UsuarioRoles.DONO && vinculo.getRole() != UsuarioRoles.ADMINISTRADOR_DO_SISTEMA)
+            throw new SemPermissaoException(usuario.getNome());
 
         return EmpresaResposta.from(empresa);
     }
@@ -81,10 +93,12 @@ public class EmpresaServico {
         Empresas empresa = this.empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a empresa"));
 
-        if(usuarioEmpresaRepositorio.findByUsuarioId(usuario.getUsuarioId()).getRole() != UsuarioRoles.DONO)
-            throw new SemPermissaoException(usuario.getNome());
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuarioId, empresaId));
 
-        if(!empresa.getEmpresaDono().getUsuarioId().equals(usuario.getUsuarioId())) throw new SemPermissaoException(usuario.getNome());
+        if(vinculo.getRole() != UsuarioRoles.DONO) throw new SemPermissaoException(usuario.getNome());
+
+        if(!empresa.getEmpresaDono().getId().equals(usuario.getId())) throw new SemPermissaoException(usuario.getNome());
 
         empresa.setDescricao(empresaRequisicao.descricao());
         empresa.setEmpresaTipo(empresaRequisicao.empresaTiposAtividade());
@@ -103,10 +117,12 @@ public class EmpresaServico {
         Empresas empresas = this.empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a empresa"));
 
-        if(usuarioEmpresaRepositorio.findByUsuarioId(usuario.getUsuarioId()).getRole() != UsuarioRoles.DONO)
-            throw new SemPermissaoException(usuario.getNome());
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresas.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuarioId, empresaId));
 
-        if (!empresas.getEmpresaDono().getUsuarioId().equals(usuario.getUsuarioId())) throw new SemPermissaoException(usuario.getNome());
+        if(vinculo.getRole() != UsuarioRoles.DONO) throw new SemPermissaoException(usuario.getNome());
+
+        if (!empresas.getEmpresaDono().getId().equals(usuario.getId())) throw new SemPermissaoException(usuario.getNome());
 
         empresas.setStatus(false);
     }

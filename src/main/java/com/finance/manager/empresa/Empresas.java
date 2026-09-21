@@ -26,7 +26,7 @@ public class Empresas {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "empresa_id")
-    private UUID empresaId;
+    private UUID id;
 
     @Column(name = "empresa_cnpj" ,nullable = false, unique = true)
     private String cnpj;
@@ -83,7 +83,7 @@ public class Empresas {
     )
     private List<Lancamento> empresaLancamentos;
 
-    @OneToMany(mappedBy = "empresaId",
+    @OneToMany(mappedBy = "id",
                fetch = FetchType.LAZY,
                cascade = CascadeType.ALL,
                orphanRemoval = true
