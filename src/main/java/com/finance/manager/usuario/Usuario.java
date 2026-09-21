@@ -18,7 +18,7 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "usuario_id")
-    private UUID usuarioId;
+    private UUID id;
 
     @Column(name = "usuario_nome", nullable = false)
     private String nome;
@@ -35,7 +35,7 @@ public class Usuario {
     @Column(name = "usuario_ativo", nullable = false)
     private boolean ativo = true;
 
-    @OneToMany(mappedBy = "usuarioId", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "id", fetch = FetchType.LAZY)
     private List<UsuarioEmpresa> usuarioEmpresas;
 
     @ManyToOne(fetch = FetchType.LAZY)

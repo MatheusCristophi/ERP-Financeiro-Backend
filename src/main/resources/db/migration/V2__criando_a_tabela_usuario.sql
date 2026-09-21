@@ -7,7 +7,7 @@ CREATE TYPE usuarios_roles AS ENUM('DONO',
 
 CREATE TABLE usuario_tabela (
     usuario_id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    usuario_nome VARCHAR(255) NOT NULL UNIQUE,
+    usuario_nome VARCHAR(255) NOT NULL,
     usuario_email VARCHAR(255) NOT NULL UNIQUE,
     usuario_senha VARCHAR(255) NOT NULL,
     usuario_ativo BOOLEAN NOT NULL DEFAULT true,

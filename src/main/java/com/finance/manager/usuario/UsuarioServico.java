@@ -58,10 +58,10 @@ public class UsuarioServico implements UserDetailsService {
             throw new SemPermissaoException(usuarioLogado.getNome());
         }
 
-        List<UsuarioEmpresa> empresaFuncionarios = usuarioEmpresaRepositorio.findByEmpresaId_EmpresaId(empresaId);
+        List<UsuarioEmpresa> empresaFuncionarios = usuarioEmpresaRepositorio.findAllByEmpresaId(empresaId);
 
         return UsuarioResposta.of(empresaFuncionarios.stream()
-                .map(UsuarioEmpresa::getUsuarioId)
+                .map(UsuarioEmpresa::getUsuario)
                 .filter(usuario -> usuario.isAtivo())
                 .toList()
         );
@@ -72,7 +72,7 @@ public class UsuarioServico implements UserDetailsService {
         Usuario funcionario = usuarioRepositorio.findById(funcionarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        boolean pertenceAEmpresa = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresaId);
+        boolean pertenceAEmpresa = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(funcionario.getId(), empresaId);
 
         if(!pertenceAEmpresa) throw new SemPermissaoException(funcionario.getNome());
 
@@ -94,8 +94,8 @@ public class UsuarioServico implements UserDetailsService {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresa.getEmpresaId())
-                .orElseThrow(() -> new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao()));
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(funcionario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(funcionario.getId(), empresa.getId()));
 
         boolean ehDonoOuAdmin = vinculo.getRole() == UsuarioRoles.DONO || vinculo.getRole() == UsuarioRoles.ADMINISTRADOR_DO_SISTEMA;
 
@@ -114,8 +114,8 @@ public class UsuarioServico implements UserDetailsService {
 
         UsuarioEmpresa usuarioEmpresa = new UsuarioEmpresa();
 
-        usuarioEmpresa.setUsuarioId(usuario);
-        usuarioEmpresa.setEmpresaId(empresa);
+        usuarioEmpresa.setUsuario(usuario);
+        usuarioEmpresa.setEmpresa(empresa);
         usuarioEmpresa.setRole(role);
         usuarioEmpresaRepositorio.save(usuarioEmpresa);
 
@@ -135,13 +135,13 @@ public class UsuarioServico implements UserDetailsService {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresa.getEmpresaId())
-                .orElseThrow(() -> new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao()));
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(funcionario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(funcionario.getId(), empresa.getId()));
 
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        boolean usuarioProprio = funcionario.getUsuarioId().equals(usuario.getUsuarioId());
+        boolean usuarioProprio = funcionario.getId().equals(usuario.getId());
 
         boolean ehDonoOuAdmin = vinculo.getRole() == UsuarioRoles.DONO || vinculo.getRole() == UsuarioRoles.ADMINISTRADOR_DO_SISTEMA;
 
@@ -166,8 +166,8 @@ public class UsuarioServico implements UserDetailsService {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(funcionario.getUsuarioId(), empresa.getEmpresaId())
-                .orElseThrow(() -> new VinculoNaoEncontrado(funcionario.getNome(), empresa.getDescricao()));
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(funcionario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(funcionario.getId(), empresa.getId()));
 
         boolean ehDonoOuAdmin = vinculo.getRole() == UsuarioRoles.DONO || vinculo.getRole() == UsuarioRoles.ADMINISTRADOR_DO_SISTEMA;
 
