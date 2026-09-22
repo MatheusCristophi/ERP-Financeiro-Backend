@@ -28,4 +28,12 @@ public class PessoaControlador {
         PessoaResposta resposta = pessoaServico.criarPessoa(usuario.getUsuario().getId(), empresaId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
+
+    @GetMapping
+    public ResponseEntity<List<PessoaResposta>> buscarTodasPessoas(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                                   @RequestParam UUID empresaId) {
+        List<PessoaResposta> resposta = pessoaServico.buscarTodasAsPessoas(usuario.getUsuario().getId(), empresaId);
+
+        return ResponseEntity.ok(resposta);
+    }
 }
