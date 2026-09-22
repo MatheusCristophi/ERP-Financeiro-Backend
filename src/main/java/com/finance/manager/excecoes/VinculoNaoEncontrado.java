@@ -1,7 +1,9 @@
 package com.finance.manager.excecoes;
 
+import java.util.UUID;
+
 public class VinculoNaoEncontrado extends RuntimeException{
-    public VinculoNaoEncontrado(String usuario, String empresa){
-        super("Vinculo não encontrado entre o usuário "+usuario+" e a empresa "+empresa);
+    public VinculoNaoEncontrado(UUID usuarioId, UUID empresaId){
+        super("Vinculo não encontrado entre o usuário "+ usuarioId +" e a empresa "+empresaId);
     }
 }

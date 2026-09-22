@@ -8,7 +8,9 @@ import com.finance.manager.excecoes.NaoEncontradoException;
 import com.finance.manager.excecoes.VinculoNaoEncontrado;
 import com.finance.manager.usuario.Usuario;
 import com.finance.manager.usuario.UsuarioRepositorio;
+import com.finance.manager.usuarioempresa.UsuarioEmpresa;
 import com.finance.manager.usuarioempresa.UsuarioEmpresaRepositorio;
+import com.finance.manager.usuarioempresa.UsuarioRoles;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,9 +39,9 @@ public class CategoriaServico {
         Usuario usuarioAtual = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getUsuarioId(), empresaAtual.getEmpresaId());
+        boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getId(), empresaAtual.getId());
 
-        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getUsuarioId().toString(), empresaAtual.getEmpresaId().toString());
+        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getId(), empresaAtual.getId());
 
         Categoria categoria = new Categoria();
         categoria.setDescricao(requisicao.descricao());
@@ -60,9 +62,9 @@ public class CategoriaServico {
         Usuario usuarioAtual = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getUsuarioId(), empresaAtual.getEmpresaId());
+        boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getId(), empresaAtual.getId());
 
-        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getUsuarioId().toString(), empresaAtual.getEmpresaId().toString());
+        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getId(), empresaAtual.getId());
 
         List<Categoria> resposta = categoriaRepositorio.findAllByCategoriaEmpresa(empresaAtual);
 
@@ -77,14 +79,14 @@ public class CategoriaServico {
         Usuario usuarioAtual = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getUsuarioId(), empresaAtual.getEmpresaId());
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuarioAtual.getId(), empresaAtual.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuarioId, empresaId));
 
-        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getUsuarioId().toString(), empresaAtual.getEmpresaId().toString());
+        if(!vinculo.getUsuario().equals(usuarioAtual) || !vinculo.getEmpresa().equals(empresaAtual))
+            throw new VinculoNaoEncontrado(usuarioAtual.getId(), empresaAtual.getId());
 
         Categoria resposta = categoriaRepositorio.findById(categoriaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
-
-        if(resposta.getCategoriaEmpresa().equals(empresaAtual)) throw new NaoEncontradoException("a Categoria");
 
         return CategoriaResposta.from(resposta);
     }
@@ -97,20 +99,26 @@ public class CategoriaServico {
         Usuario usuarioAtual = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getUsuarioId(), empresaAtual.getEmpresaId());
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuarioAtual.getId(), empresaAtual.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuarioId, empresaId));
 
-        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getUsuarioId().toString(), empresaAtual.getEmpresaId().toString());
+        if(!vinculo.getUsuario().equals(usuarioAtual) || !vinculo.getEmpresa().equals(empresaAtual))
+            throw new VinculoNaoEncontrado(usuarioAtual.getId(), empresaAtual.getId());
 
         Categoria categoria = categoriaRepositorio.findById(categoriaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
 
-        if(categoria.getCategoriaEmpresa().equals(empresaAtual)) throw new NaoEncontradoException("a Categoria");
+        if(!categoria.getCategoriaEmpresa().equals(empresaAtual)) throw new NaoEncontradoException("a Categoria");
 
         if(!requisicao.descricao().isEmpty()) categoria.setDescricao(requisicao.descricao());
 
         if(requisicao.tipo() != null) categoria.setTipo(requisicao.tipo());
 
-        if(!requisicao.status()) categoria.setStatus(false);
+        if (requisicao.status()) {
+            categoria.setStatus(true);
+        } else {
+            categoria.setStatus(false);
+        }
 
         return CategoriaResposta.from(categoria);
     }
@@ -123,9 +131,9 @@ public class CategoriaServico {
         Usuario usuarioAtual = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
-        boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getUsuarioId(), empresaAtual.getEmpresaId());
+        boolean vinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuarioAtual.getId(), empresaAtual.getId());
 
-        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getUsuarioId().toString(), empresaAtual.getEmpresaId().toString());
+        if(!vinculo) throw new VinculoNaoEncontrado(usuarioAtual.getId(), empresaAtual.getId());
 
         Categoria categoria = categoriaRepositorio.findById(categoriaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));

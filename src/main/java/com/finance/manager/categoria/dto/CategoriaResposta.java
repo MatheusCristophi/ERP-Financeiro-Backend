@@ -1,13 +1,13 @@
 package com.finance.manager.categoria.dto;
 
 import com.finance.manager.categoria.Categoria;
-import com.finance.manager.lancamento.LancamentoTipo;
+import com.finance.manager.categoria.CategoriaTipo;
 
 import java.util.List;
 import java.util.UUID;
 
 public record CategoriaResposta(String descricao,
-                                LancamentoTipo tipo,
+                                CategoriaTipo tipo,
                                 boolean status,
                                 UUID empresaId){
 
@@ -16,7 +16,7 @@ public record CategoriaResposta(String descricao,
                 categoria.getDescricao(),
                 categoria.getTipo(),
                 categoria.isStatus(),
-                categoria.getCategoriaEmpresa().getEmpresaId()
+                categoria.getCategoriaEmpresa().getId()
         );
     }
 

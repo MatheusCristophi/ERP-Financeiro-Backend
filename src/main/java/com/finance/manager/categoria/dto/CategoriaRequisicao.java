@@ -1,8 +1,8 @@
 package com.finance.manager.categoria.dto;
 
-import com.finance.manager.lancamento.LancamentoTipo;
+import com.finance.manager.categoria.CategoriaTipo;
 
 public record CategoriaRequisicao(String descricao,
-                                  LancamentoTipo tipo,
+                                  CategoriaTipo tipo,
                                   boolean status){
 }
