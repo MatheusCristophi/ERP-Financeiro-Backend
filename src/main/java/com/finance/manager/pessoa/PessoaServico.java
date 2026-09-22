@@ -15,6 +15,7 @@ import com.finance.manager.usuarioempresa.UsuarioRoles;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -39,8 +40,8 @@ public class PessoaServico {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a empresa"));
 
-        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId())
-                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getUsuarioId().toString(), empresa.getEmpresaId().toString()));
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getId(), empresa.getId()));
 
         if (vinculo.getRole() != UsuarioRoles.DONO && vinculo.getRole() != UsuarioRoles.ADMINISTRADOR_DO_SISTEMA)
             throw new SemPermissaoException(usuario.getNome());
@@ -57,5 +58,20 @@ public class PessoaServico {
         pessoaRepositorio.save(pessoa);
 
         return PessoaResposta.from(pessoa);
+    }
+
+    public List<PessoaResposta> buscarTodasAsPessoas(UUID usuarioId, UUID empresaId) {
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresa = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getId(), empresa.getId()));
+
+        List<Pessoa> resposta = pessoaRepositorio.findAllByEmpresaId(empresa.getId());
+
+        return PessoaResposta.of(resposta);
     }
 }

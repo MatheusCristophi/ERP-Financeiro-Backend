@@ -7,6 +7,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.util.List;
 import java.util.UUID;
@@ -24,7 +25,7 @@ public class Pessoa {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "pessoa_id")
-    private UUID pessoaId;
+    private UUID id;
 
     @Column(name = "pessoa_nome", nullable = false)
     private String nome;
@@ -37,6 +38,7 @@ public class Pessoa {
 
     @Column(name = "pessoa_tipo", nullable = false)
     @Enumerated(EnumType.STRING)
+    @ColumnTransformer(write = "?::pessoa_tipo")
     private PessoaTipo tipo;
 
     @ManyToOne(fetch = FetchType.LAZY)
