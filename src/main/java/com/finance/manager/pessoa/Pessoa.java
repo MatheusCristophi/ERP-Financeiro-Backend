@@ -53,4 +53,7 @@ public class Pessoa {
 
     @OneToMany(mappedBy = "usuarioPessoa", fetch = FetchType.LAZY)
     private List<Usuario> pessoaUsuarios;
+
+    @Column(name = "pessoa_status", nullable = false)
+    private boolean status = true;
 }

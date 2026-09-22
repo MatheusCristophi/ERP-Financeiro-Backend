@@ -114,4 +114,23 @@ public class PessoaServico {
 
         return PessoaResposta.from(pessoa);
     }
+
+    public void desativarPessoa(UUID usuarioId, UUID empresaId, UUID pessoaId) {
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresa = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getId(), empresa.getId()));
+
+        if(vinculo.getRole() != UsuarioRoles.DONO && vinculo.getRole() != UsuarioRoles.ADMINISTRADOR_DO_SISTEMA)
+            throw new SemPermissaoException(usuario.getNome());
+
+        Pessoa pessoa = pessoaRepositorio.findById(pessoaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Pessoa"));
+
+        pessoa.setStatus(false);
+    }
 }

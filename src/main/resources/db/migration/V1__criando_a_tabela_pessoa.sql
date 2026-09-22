@@ -10,5 +10,6 @@ CREATE TABLE pessoa_tabela (
     pessoa_nome VARCHAR(255) NOT NULL,
     pessoa_cpf VARCHAR(11) UNIQUE,
     pessoa_cnpj VARCHAR(14) UNIQUE,
-    pessoa_tipo pessoa_tipo NOT NULL
+    pessoa_tipo pessoa_tipo NOT NULL,
+    pessoa_status BOOLEAN NOT NULL DEFAULT true
 );
