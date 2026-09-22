@@ -45,4 +45,14 @@ public class PessoaControlador {
 
         return ResponseEntity.ok(resposta);
     }
+
+    @PutMapping("/pessoaId")
+    public ResponseEntity<PessoaResposta> atualizarPessoa(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                          @RequestParam UUID empresaId,
+                                                          @PathVariable UUID pessoaId,
+                                                          @RequestBody PessoaRequisicao requisicao) {
+        PessoaResposta resposta = pessoaServico.atualizarDadosDaPessoa(usuario.getUsuario().getId(), empresaId, pessoaId, requisicao);
+
+        return ResponseEntity.ok(resposta);
+    }
 }
