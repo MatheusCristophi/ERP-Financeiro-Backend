@@ -74,4 +74,20 @@ public class PessoaServico {
 
         return PessoaResposta.of(resposta);
     }
+
+    public PessoaResposta buscarPessoaPeloId(UUID usuarioId, UUID empresaId, UUID pessoaId) {
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresa = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getId(), empresa.getId()));
+
+        Pessoa resposta = pessoaRepositorio.findById(pessoaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Pessoa"));
+
+        return PessoaResposta.from(resposta);
+    }
 }
