@@ -13,6 +13,7 @@ import com.finance.manager.usuarioempresa.UsuarioEmpresa;
 import com.finance.manager.usuarioempresa.UsuarioEmpresaRepositorio;
 import com.finance.manager.usuarioempresa.UsuarioRoles;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -32,6 +33,7 @@ public class ContaServico {
         this.usuarioEmpresaRepositorio = usuarioEmpresaRepositorio;
     }
 
+    @Transactional
     public ContaResposta criarConta(UUID usuarioId, UUID empresaId, ContaRequisicao requisicao) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
@@ -39,8 +41,8 @@ public class ContaServico {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId())
-                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getUsuarioId().toString(), empresa.getEmpresaId().toString()));
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getId(), empresa.getId()));
 
         if(vinculo.getRole() != UsuarioRoles.DONO && vinculo.getRole() != UsuarioRoles.ADMINISTRADOR_DO_SISTEMA) throw new SemPermissaoException(usuario.getNome());
 
@@ -58,6 +60,7 @@ public class ContaServico {
         return ContaResposta.from(conta);
     }
 
+    @Transactional(readOnly = true)
     public List<ContaResposta> buscarTodasAsContas(UUID usuarioId, UUID empresaId) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
@@ -65,15 +68,15 @@ public class ContaServico {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId());
-
-        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getUsuarioId().toString(), empresa.getEmpresaId().toString());
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getId(), empresa.getId()));
 
         List<Conta> contas = contaRepositorio.findAllByContaEmpresa(empresa);
 
         return ContaResposta.of(contas);
     }
 
+    @Transactional(readOnly = true)
     public ContaResposta buscarConta(UUID usuarioId, UUID empresaId, UUID contaId) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
@@ -81,9 +84,8 @@ public class ContaServico {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId());
-
-        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getUsuarioId().toString(), empresa.getEmpresaId().toString());
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getId(), empresa.getId()));
 
         Conta conta = contaRepositorio.findById(contaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Conta"));
@@ -93,6 +95,7 @@ public class ContaServico {
         return ContaResposta.from(conta);
     }
 
+    @Transactional
     public ContaResposta atualizarConta(UUID usuarioId, UUID empresaId, UUID contaId, ContaRequisicao requisicao) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
@@ -100,8 +103,8 @@ public class ContaServico {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId())
-                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao()));
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getId(), empresa.getId()));
 
         if(vinculo.getRole() != UsuarioRoles.DONO && vinculo.getRole() != UsuarioRoles.ADMINISTRADOR_DO_SISTEMA)
             throw new SemPermissaoException(usuario.getNome());
@@ -120,6 +123,7 @@ public class ContaServico {
         return ContaResposta.from(conta);
     }
 
+    @Transactional
     public void desativarConta(UUID usuarioId, UUID empresaId, UUID contaId) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
@@ -127,12 +131,8 @@ public class ContaServico {
         Empresas empresa = empresaRepositorio.findById(empresaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
 
-        boolean existeVinculo = usuarioEmpresaRepositorio.existsByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId());
-
-        if(!existeVinculo) throw new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao());
-
-        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getUsuarioId(), empresa.getEmpresaId())
-                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getNome(), empresa.getDescricao()));
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getId(), empresa.getId()));
 
         if(vinculo.getRole() != UsuarioRoles.DONO && vinculo.getRole() != UsuarioRoles.ADMINISTRADOR_DO_SISTEMA)
             throw new SemPermissaoException(usuario.getNome());

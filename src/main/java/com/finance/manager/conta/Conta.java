@@ -3,6 +3,7 @@ package com.finance.manager.conta;
 import com.finance.manager.empresa.Empresas;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.util.UUID;
 
@@ -22,10 +23,12 @@ public class Conta {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "conta_tipo", nullable = false)
+    @ColumnTransformer(write = "?::conta_tipo")
     private ContaTipo contaTipo;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "conta_movimentacao", nullable = false)
+    @ColumnTransformer(write = "?::conta_movimentacao")
     private MovimentacaoTipo contaMovimentacao;
 
     @Column(name = "conta_numero", nullable = false, unique = true, length = 12)

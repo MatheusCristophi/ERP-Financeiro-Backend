@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("auth")
-@PreAuthorize("isAuthenticated()")
+@PreAuthorize("permitAll()")
 public class SecurityControlador {
 
     private final SecurityServico securityServico;
