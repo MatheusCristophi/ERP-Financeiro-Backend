@@ -5,5 +5,5 @@ public enum UsuarioRoles {
     ADMINISTRADOR_DO_SISTEMA,
     ANALISTA_DE_CONTAS_A_PAGAR,
     ANALISTA_DE_CONTAS_A_RECEBER,
-    CONSULTOR //readonly para relatórios DRE, fluxo de caixa e etc
+    CONSULTOR // cargo para a v2 readonly para relatórios DRE, fluxo de caixa e etc
 }

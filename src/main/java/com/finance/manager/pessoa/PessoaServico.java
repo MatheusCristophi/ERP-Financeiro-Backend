@@ -43,8 +43,7 @@ public class PessoaServico {
         UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
                 .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getId(), empresa.getId()));
 
-        if (vinculo.getRole() != UsuarioRoles.DONO && vinculo.getRole() != UsuarioRoles.ADMINISTRADOR_DO_SISTEMA)
-            throw new SemPermissaoException(usuario.getNome());
+        if (vinculo.getRole() == UsuarioRoles.CONSULTOR) throw new SemPermissaoException(usuario.getNome());
 
         Pessoa pessoa = new Pessoa();
 
@@ -89,5 +88,30 @@ public class PessoaServico {
                 .orElseThrow(() -> new NaoEncontradoException("a Pessoa"));
 
         return PessoaResposta.from(resposta);
+    }
+
+    public PessoaResposta atualizarDadosDaPessoa(UUID usuarioId, UUID empresaId, UUID pessoaId, PessoaRequisicao requisicao) {
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresa = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getId(), empresa.getId()));
+
+        if(vinculo.getRole() == UsuarioRoles.CONSULTOR) throw new SemPermissaoException(usuario.getNome());
+
+        Pessoa pessoa = pessoaRepositorio.findById(pessoaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Pessoa"));
+
+        if(!requisicao.cnpj().isEmpty()) pessoa.setCnpj(requisicao.cnpj());
+        if(!requisicao.cpf().isEmpty()) pessoa.setCpf(requisicao.cpf());
+        if(!requisicao.nome().isEmpty()) pessoa.setNome(requisicao.nome());
+        if(requisicao.tipo() != null) pessoa.setTipo(requisicao.tipo());
+
+        pessoaRepositorio.save(pessoa);
+
+        return PessoaResposta.from(pessoa);
     }
 }
