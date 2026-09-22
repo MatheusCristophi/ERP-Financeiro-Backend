@@ -55,4 +55,12 @@ public class PessoaControlador {
 
         return ResponseEntity.ok(resposta);
     }
+
+    @PatchMapping("/pessoaId")
+    public ResponseEntity<Void> desativarPessoa(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                @RequestParam UUID empresaId,
+                                                @PathVariable UUID pessoaId) {
+        pessoaServico.desativarPessoa(usuario.getUsuario().getId(), empresaId, pessoaId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
