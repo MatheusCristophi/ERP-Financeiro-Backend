@@ -36,4 +36,13 @@ public class PessoaControlador {
 
         return ResponseEntity.ok(resposta);
     }
+
+    @GetMapping("/{pessoaId}")
+    public ResponseEntity<PessoaResposta> buscarPessoaPorId(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                            @RequestParam UUID empresaId,
+                                                            @PathVariable UUID pessoaId) {
+        PessoaResposta resposta = pessoaServico.buscarPessoaPeloId(usuario.getUsuario().getId(), empresaId, pessoaId);
+
+        return ResponseEntity.ok(resposta);
+    }
 }
