@@ -3,6 +3,7 @@ package com.finance.manager.lancamento;
 import com.finance.manager.empresa.EmpresaRepositorio;
 import com.finance.manager.empresa.Empresas;
 import com.finance.manager.excecoes.NaoEncontradoException;
+import com.finance.manager.excecoes.SemPermissaoException;
 import com.finance.manager.excecoes.VinculoNaoEncontrado;
 import com.finance.manager.lancamento.dto.LancamentoResposta;
 import com.finance.manager.usuario.Usuario;
@@ -42,5 +43,23 @@ public class LancamentoServico {
         List<Lancamento> resposta = lancamentoRepositorio.findAllByLancamentoEmpresa(empresas);
 
         return LancamentoResposta.of(resposta);
+    }
+
+    public LancamentoResposta buscarLancamentoPorId(UUID usuarioId, UUID empresaId, UUID lancamentoId) {
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresas = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresas.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuarioId, empresaId));
+
+        Lancamento resposta = lancamentoRepositorio.findById(lancamentoId)
+                .orElseThrow(() -> new NaoEncontradoException("o Lançamento"));
+
+        if(!resposta.getLancamentoEmpresa().equals(empresas)) throw new NaoEncontradoException("o Lancamento");
+
+        return LancamentoResposta.from(resposta);
     }
 }
