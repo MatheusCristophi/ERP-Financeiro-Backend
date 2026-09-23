@@ -18,6 +18,7 @@ import com.finance.manager.usuarioempresa.UsuarioEmpresaRepositorio;
 import com.finance.manager.usuarioempresa.UsuarioRoles;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -113,5 +114,48 @@ public class LancamentoServico {
         if(!resposta.getLancamentoEmpresa().equals(empresas)) throw new NaoEncontradoException("o Lancamento");
 
         return LancamentoResposta.from(resposta);
+    }
+
+    public LancamentoResposta atualizarLancamentos(UUID usuarioId, UUID empresaId, UUID lancamentoId, UUID categoriaId, UUID pessoaId, LancamentoRequisicao requisicao) {
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresas = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresas.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuarioId, empresaId));
+
+        if(vinculo.getRole() == UsuarioRoles.CONSULTOR) throw new SemPermissaoException(usuario.getNome());
+
+        Categoria categoria = categoriaRepositorio.findById(categoriaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
+
+        if(!categoria.getCategoriaEmpresa().equals(empresas)) throw new NaoEncontradoException("a Categoria");
+
+        Pessoa pessoa = pessoaRepositorio.findById(pessoaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Pessoa"));
+
+        if(!pessoa.getPessoaEmpresa().equals(empresas)) throw new NaoEncontradoException("a Pessoa");
+
+        Lancamento lancamento = lancamentoRepositorio.findById(lancamentoId)
+                .orElseThrow(() -> new NaoEncontradoException("o Lançamento"));
+
+        if(!requisicao.descricao().isEmpty()) lancamento.setDescricao(requisicao.descricao());
+        if(requisicao.valor() != BigDecimal.ZERO) lancamento.setValor(requisicao.valor());
+        lancamento.setDataEmissao(requisicao.dataEmissao());
+        lancamento.setDataVencimento(requisicao.dataVencimento());
+        lancamento.setDataPagamento(requisicao.dataPagamento());
+        lancamento.setLancamentoCategoria(categoria);
+        lancamento.setLancamentoEmpresa(empresas);
+        lancamento.setLancamentoPessoa(pessoa);
+        lancamento.setLancamentoUsuario(usuario);
+        if(requisicao.movimentacaoTipo() != null) lancamento.setMovimentacao(requisicao.movimentacaoTipo());
+        lancamento.setStatus(requisicao.status());
+        if(!requisicao.observacao().isEmpty()) lancamento.setObservacao(requisicao.observacao());
+
+        lancamentoRepositorio.save(lancamento);
+
+        return LancamentoResposta.from(lancamento);
     }
 }
