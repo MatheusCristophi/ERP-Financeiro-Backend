@@ -52,4 +52,15 @@ public class LancamentoControlador {
         LancamentoResposta resposta = lancamentoServico.criarLancamentos(usuario.getUsuario().getId(), empresaId, categoriaId, pessoaId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
+
+    @PutMapping("{lancamentoId}")
+    public ResponseEntity<LancamentoResposta> atualizarLancamento(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                                  @RequestParam UUID empresaId,
+                                                                  @PathVariable UUID lancamentoId,
+                                                                  @RequestParam UUID categoriaId,
+                                                                  @RequestParam UUID pessoaId,
+                                                                  @RequestBody LancamentoRequisicao requisicao) {
+        LancamentoResposta resposta = lancamentoServico.atualizarLancamentos(usuario.getUsuario().getId(), empresaId, lancamentoId, categoriaId, pessoaId, requisicao);
+        return ResponseEntity.ok(resposta);
+    }
 }
