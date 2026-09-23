@@ -5,6 +5,7 @@ import com.finance.manager.seguranca.UsuarioAutenticado;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -21,8 +22,17 @@ public class LancamentoControlador {
     }
 
     @GetMapping
-    public ResponseEntity<List<LancamentoResposta>> buscarLancamentos(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId) {
+    public ResponseEntity<List<LancamentoResposta>> buscarLancamentos(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                                      @RequestParam UUID empresaId) {
         List<LancamentoResposta> resposta = lancamentoServico.buscarTodosLancamentos(usuario.getUsuario().getId(), empresaId);
+        return ResponseEntity.ok(resposta);
+    }
+
+    @GetMapping("{pessoaId}")
+    public ResponseEntity<List<LancamentoResposta>> buscarLancamentosPorPessoa(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                                               @RequestParam UUID empresaId,
+                                                                               @PathVariable UUID pessoaId) {
+        List<LancamentoResposta> resposta = lancamentoServico.buscarLancamentosPorPessoa(usuario.getUsuario().getId(), empresaId, pessoaId);
         return ResponseEntity.ok(resposta);
     }
 }
