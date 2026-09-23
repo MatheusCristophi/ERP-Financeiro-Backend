@@ -158,4 +158,24 @@ public class LancamentoServico {
 
         return LancamentoResposta.from(lancamento);
     }
+
+    public void deletarLancamento(UUID usuarioId, UUID empresaId, UUID lancamentoId) {
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresas = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresas.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuarioId, empresaId));
+
+        if(vinculo.getRole() == UsuarioRoles.CONSULTOR) throw new SemPermissaoException(usuario.getNome());
+
+        Lancamento lancamento = lancamentoRepositorio.findById(lancamentoId)
+                .orElseThrow(() -> new NaoEncontradoException("o Lançamento"));
+
+        if(!lancamento.getLancamentoEmpresa().equals(empresas)) throw new NaoEncontradoException("o Lançamento");
+
+        lancamentoRepositorio.delete(lancamento);
+    }
 }
