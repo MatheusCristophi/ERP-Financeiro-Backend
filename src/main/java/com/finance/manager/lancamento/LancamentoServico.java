@@ -98,6 +98,26 @@ public class LancamentoServico {
         return LancamentoResposta.of(resposta);
     }
 
+    public List<LancamentoResposta> buscarLancamentosPorPessoa(UUID usuarioId, UUID empresaId, UUID pessoaId) {
+        Usuario usuario = usuarioRepositorio.findById(usuarioId)
+                .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
+
+        Empresas empresas = empresaRepositorio.findById(empresaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Empresa"));
+
+        UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresas.getId())
+                .orElseThrow(() -> new VinculoNaoEncontrado(usuarioId, empresaId));
+
+        Pessoa pessoa = pessoaRepositorio.findById(pessoaId)
+                .orElseThrow(() -> new NaoEncontradoException("a Pessoa"));
+
+        if(!pessoa.getPessoaEmpresa().equals(empresas)) throw new NaoEncontradoException("a Pessoa");
+
+        List<Lancamento> resposta = lancamentoRepositorio.findAllByLancamentoPessoa(pessoa);
+
+        return LancamentoResposta.of(resposta);
+    }
+
     public LancamentoResposta buscarLancamentoPorId(UUID usuarioId, UUID empresaId, UUID lancamentoId) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
