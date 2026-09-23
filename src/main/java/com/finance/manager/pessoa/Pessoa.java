@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnTransformer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -52,7 +53,7 @@ public class Pessoa {
     private List<Lancamento> pessoaLancamentos;
 
     @OneToMany(mappedBy = "usuarioPessoa", fetch = FetchType.LAZY)
-    private List<Usuario> pessoaUsuarios;
+    private List<Usuario> pessoaUsuarios = new ArrayList<>();
 
     @Column(name = "pessoa_status", nullable = false)
     private boolean status = true;

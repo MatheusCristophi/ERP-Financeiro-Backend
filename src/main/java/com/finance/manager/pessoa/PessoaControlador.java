@@ -46,7 +46,7 @@ public class PessoaControlador {
         return ResponseEntity.ok(resposta);
     }
 
-    @PutMapping("/pessoaId")
+    @PutMapping("/{pessoaId}")
     public ResponseEntity<PessoaResposta> atualizarPessoa(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                           @RequestParam UUID empresaId,
                                                           @PathVariable UUID pessoaId,
@@ -56,7 +56,7 @@ public class PessoaControlador {
         return ResponseEntity.ok(resposta);
     }
 
-    @PatchMapping("/pessoaId")
+    @PatchMapping("/{pessoaId}")
     public ResponseEntity<Void> desativarPessoa(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                 @RequestParam UUID empresaId,
                                                 @PathVariable UUID pessoaId) {

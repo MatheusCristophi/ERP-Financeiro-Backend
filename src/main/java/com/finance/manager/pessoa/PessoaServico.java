@@ -59,6 +59,7 @@ public class PessoaServico {
         return PessoaResposta.from(pessoa);
     }
 
+    @Transactional(readOnly = true)
     public List<PessoaResposta> buscarTodasAsPessoas(UUID usuarioId, UUID empresaId) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
@@ -69,11 +70,12 @@ public class PessoaServico {
         UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresa.getId())
                 .orElseThrow(() -> new VinculoNaoEncontrado(usuario.getId(), empresa.getId()));
 
-        List<Pessoa> resposta = pessoaRepositorio.findAllByEmpresaId(empresa.getId());
+        List<Pessoa> resposta = pessoaRepositorio.findAllByPessoaEmpresa(empresa);
 
         return PessoaResposta.of(resposta);
     }
 
+    @Transactional(readOnly = true)
     public PessoaResposta buscarPessoaPeloId(UUID usuarioId, UUID empresaId, UUID pessoaId) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
@@ -90,6 +92,7 @@ public class PessoaServico {
         return PessoaResposta.from(resposta);
     }
 
+    @Transactional
     public PessoaResposta atualizarDadosDaPessoa(UUID usuarioId, UUID empresaId, UUID pessoaId, PessoaRequisicao requisicao) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
@@ -115,6 +118,7 @@ public class PessoaServico {
         return PessoaResposta.from(pessoa);
     }
 
+    @Transactional
     public void desativarPessoa(UUID usuarioId, UUID empresaId, UUID pessoaId) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
