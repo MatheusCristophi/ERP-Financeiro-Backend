@@ -63,4 +63,12 @@ public class LancamentoControlador {
         LancamentoResposta resposta = lancamentoServico.atualizarLancamentos(usuario.getUsuario().getId(), empresaId, lancamentoId, categoriaId, pessoaId, requisicao);
         return ResponseEntity.ok(resposta);
     }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deletarLancamento(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                  @RequestParam UUID empresaId,
+                                                  @RequestParam UUID lancamentoId) {
+        lancamentoServico.deletarLancamento(usuario.getUsuario().getId(), empresaId, lancamentoId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
