@@ -3,6 +3,7 @@ package com.finance.manager.pessoa;
 import com.finance.manager.pessoa.dto.PessoaRequisicao;
 import com.finance.manager.pessoa.dto.PessoaResposta;
 import com.finance.manager.seguranca.UsuarioAutenticado;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +25,7 @@ public class PessoaControlador {
     @PostMapping("/{empresaId}")
     public ResponseEntity<PessoaResposta> criarPessoa(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                       @PathVariable UUID empresaId,
-                                                      @RequestBody PessoaRequisicao requisicao) {
+                                                      @Valid @RequestBody PessoaRequisicao requisicao) {
         PessoaResposta resposta = pessoaServico.criarPessoa(usuario.getUsuario().getId(), empresaId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
@@ -50,7 +51,7 @@ public class PessoaControlador {
     public ResponseEntity<PessoaResposta> atualizarPessoa(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                           @RequestParam UUID empresaId,
                                                           @PathVariable UUID pessoaId,
-                                                          @RequestBody PessoaRequisicao requisicao) {
+                                                          @Valid @RequestBody PessoaRequisicao requisicao) {
         PessoaResposta resposta = pessoaServico.atualizarDadosDaPessoa(usuario.getUsuario().getId(), empresaId, pessoaId, requisicao);
 
         return ResponseEntity.ok(resposta);

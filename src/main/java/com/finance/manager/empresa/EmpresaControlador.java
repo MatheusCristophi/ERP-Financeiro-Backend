@@ -4,6 +4,7 @@ import com.finance.manager.empresa.dto.EmpresaRequisicao;
 import com.finance.manager.empresa.dto.EmpresaResposta;
 import com.finance.manager.seguranca.UsuarioAutenticado;
 import com.finance.manager.usuario.Usuario;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,7 +35,7 @@ public class EmpresaControlador {
     }
 
     @PostMapping
-    public ResponseEntity<EmpresaResposta> criarEmpresa(@RequestBody EmpresaRequisicao requisicao,
+    public ResponseEntity<EmpresaResposta> criarEmpresa(@Valid @RequestBody EmpresaRequisicao requisicao,
                                                         @AuthenticationPrincipal UsuarioAutenticado usuario
     ){
         EmpresaResposta resposta = this.empresaServico.criarEmpresa(requisicao, usuario.getUsuario().getId());
@@ -43,6 +44,7 @@ public class EmpresaControlador {
 
     @PutMapping("{empresaId}")
     public ResponseEntity<EmpresaResposta> atualizarEmpresa(@PathVariable UUID empresaId,
+                                                            @Valid
                                                             @RequestBody EmpresaRequisicao requisicao,
                                                             @AuthenticationPrincipal UsuarioAutenticado usuario) {
         EmpresaResposta resposta = this.empresaServico.atualizarEmpresaCompleta(empresaId, usuario.getUsuario().getId(), requisicao);

@@ -4,6 +4,7 @@ import com.finance.manager.conta.dto.ContaRequisicao;
 import com.finance.manager.conta.dto.ContaResposta;
 import com.finance.manager.seguranca.UsuarioAutenticado;
 import com.finance.manager.usuario.Usuario;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -34,13 +35,17 @@ public class ContaControlador {
     }
 
     @PostMapping
-    public ResponseEntity<ContaResposta> criarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId, @RequestBody ContaRequisicao requisicao) {
+    public ResponseEntity<ContaResposta> criarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId,
+                                                    @Valid
+                                                    @RequestBody ContaRequisicao requisicao) {
         ContaResposta resposta = this.contaServico.criarConta(usuario.getUsuario().getId(), empresaId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
 
     @PutMapping("{contaId}")
-    public ResponseEntity<ContaResposta> atualizarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId, @PathVariable UUID contaId, @RequestBody ContaRequisicao requisicao) {
+    public ResponseEntity<ContaResposta> atualizarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId, @PathVariable UUID contaId,
+                                                        @Valid
+                                                        @RequestBody ContaRequisicao requisicao) {
         ContaResposta resposta = this.contaServico.atualizarConta(usuario.getUsuario().getId(), empresaId, contaId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }

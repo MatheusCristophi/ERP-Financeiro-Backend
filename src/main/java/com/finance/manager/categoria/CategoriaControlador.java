@@ -4,6 +4,7 @@ import com.finance.manager.categoria.dto.CategoriaRequisicao;
 import com.finance.manager.categoria.dto.CategoriaResposta;
 import com.finance.manager.seguranca.UsuarioAutenticado;
 import com.finance.manager.usuario.Usuario;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -35,13 +36,17 @@ public class CategoriaControlador {
     }
 
     @PostMapping
-    public ResponseEntity<CategoriaResposta> criarCategoria(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId, @RequestBody CategoriaRequisicao requisicao) {
+    public ResponseEntity<CategoriaResposta> criarCategoria(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId,
+                                                            @Valid
+                                                            @RequestBody CategoriaRequisicao requisicao) {
         CategoriaResposta resposta = this.categoriaServico.criarCategoria(empresaId, usuario.getUsuario().getId(), requisicao);
         return new ResponseEntity<>(resposta,HttpStatus.CREATED);
     }
 
     @PutMapping("{categoriaId}")
-    public ResponseEntity<CategoriaResposta> atualizarCategoria(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId, @RequestBody CategoriaRequisicao requisicao, @PathVariable UUID categoriaId) {
+    public ResponseEntity<CategoriaResposta> atualizarCategoria(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId,
+                                                                @Valid
+                                                                @RequestBody CategoriaRequisicao requisicao, @PathVariable UUID categoriaId) {
         CategoriaResposta resposta = this.categoriaServico.atualizarCategoria(empresaId, usuario.getUsuario().getId(), requisicao, categoriaId);
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }

@@ -4,6 +4,7 @@ import com.finance.manager.seguranca.UsuarioAutenticado;
 import com.finance.manager.usuario.dto.UsuarioRequisicao;
 import com.finance.manager.usuario.dto.UsuarioResposta;
 import com.finance.manager.usuarioempresa.UsuarioRoles;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,6 +40,7 @@ public class UsuarioControlador {
 
     @PostMapping
     public ResponseEntity<UsuarioResposta> criarUsuario(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                        @Valid
                                                         @RequestBody UsuarioRequisicao requisicao,
                                                         @RequestParam UsuarioRoles roles,
                                                         @RequestParam UUID empresaId) {
@@ -48,6 +50,7 @@ public class UsuarioControlador {
 
     @PutMapping("/{roles}")
     public ResponseEntity<UsuarioResposta> atualizarUsuario(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                            @Valid
                                                             @RequestBody UsuarioRequisicao requisicao,
                                                             @PathVariable UsuarioRoles roles,
                                                             @RequestParam UUID usuarioId,
