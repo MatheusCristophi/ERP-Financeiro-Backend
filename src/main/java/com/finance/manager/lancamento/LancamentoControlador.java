@@ -35,4 +35,12 @@ public class LancamentoControlador {
         List<LancamentoResposta> resposta = lancamentoServico.buscarLancamentosPorPessoa(usuario.getUsuario().getId(), empresaId, pessoaId);
         return ResponseEntity.ok(resposta);
     }
+
+    @GetMapping("{lancamentoId}")
+    public ResponseEntity<LancamentoResposta> buscarLancamentoPorId(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                                    @RequestParam UUID empresaId,
+                                                                    @PathVariable UUID lancamentoId) {
+        LancamentoResposta resposta = lancamentoServico.buscarLancamentoPorId(usuario.getUsuario().getId(), empresaId, lancamentoId);
+        return ResponseEntity.ok(resposta);
+    }
 }
