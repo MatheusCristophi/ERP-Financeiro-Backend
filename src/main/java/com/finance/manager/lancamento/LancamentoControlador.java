@@ -3,6 +3,7 @@ package com.finance.manager.lancamento;
 import com.finance.manager.lancamento.dto.LancamentoRequisicao;
 import com.finance.manager.lancamento.dto.LancamentoResposta;
 import com.finance.manager.seguranca.UsuarioAutenticado;
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,7 +12,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@RestController("lancamentos")
+@RestController
+@RequestMapping("lancamentos")
 public class LancamentoControlador {
 
     private final LancamentoServico lancamentoServico;
@@ -27,7 +29,7 @@ public class LancamentoControlador {
         return ResponseEntity.ok(resposta);
     }
 
-    @GetMapping("{pessoaId}")
+    @GetMapping("pessoa/{pessoaId}")
     public ResponseEntity<List<LancamentoResposta>> buscarLancamentosPorPessoa(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                                                @RequestParam UUID empresaId,
                                                                                @PathVariable UUID pessoaId) {
@@ -48,7 +50,7 @@ public class LancamentoControlador {
                                                               @RequestParam UUID empresaId,
                                                               @RequestParam UUID categoriaId,
                                                               @RequestParam UUID pessoaId,
-                                                              @RequestBody LancamentoRequisicao requisicao) {
+                                                              @RequestBody LancamentoRequisicao requisicao) throws BadRequestException {
         LancamentoResposta resposta = lancamentoServico.criarLancamentos(usuario.getUsuario().getId(), empresaId, categoriaId, pessoaId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
@@ -59,7 +61,7 @@ public class LancamentoControlador {
                                                                   @PathVariable UUID lancamentoId,
                                                                   @RequestParam UUID categoriaId,
                                                                   @RequestParam UUID pessoaId,
-                                                                  @RequestBody LancamentoRequisicao requisicao) {
+                                                                  @RequestBody LancamentoRequisicao requisicao) throws BadRequestException {
         LancamentoResposta resposta = lancamentoServico.atualizarLancamentos(usuario.getUsuario().getId(), empresaId, lancamentoId, categoriaId, pessoaId, requisicao);
         return ResponseEntity.ok(resposta);
     }

@@ -1,9 +1,12 @@
 package com.finance.manager.excecoes;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.nio.file.AccessDeniedException;
 
@@ -20,8 +23,30 @@ public class GlobalHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ProblemDetail handleDadosInvalidos(BadCredentialsException ex) {
+        ProblemDetail problemDetail =  ProblemDetail.forStatusAndDetail(
+                HttpStatus.UNAUTHORIZED,
+                "Dados Inválidos."
+        );
+        problemDetail.setInstance(null);
+        problemDetail.setType(java.net.URI.create("about:blank"));
+        return problemDetail;
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    public ProblemDetail handleErroNaRequisicao(BadRequestException ex) {
+        ProblemDetail problemDetail =  ProblemDetail.forStatusAndDetail(
+                HttpStatus.BAD_REQUEST,
+                "Ocorreu um erro na requisição, verifique as informações."
+        );
+        problemDetail.setInstance(null);
+        problemDetail.setType(java.net.URI.create("about:blank"));
+        return problemDetail;
+    }
+
     @ExceptionHandler(InternalError.class)
-    public ProblemDetail handleErroIntero(AccessDeniedException ex) {
+    public ProblemDetail handleErroInterno(AccessDeniedException ex) {
         ProblemDetail problemDetail =  ProblemDetail.forStatusAndDetail(
                 HttpStatus.FORBIDDEN,
                 "Ocorreu um problema interno. Por favor, contate o Desenvolvedor"

@@ -16,6 +16,7 @@ import com.finance.manager.usuario.UsuarioRepositorio;
 import com.finance.manager.usuarioempresa.UsuarioEmpresa;
 import com.finance.manager.usuarioempresa.UsuarioEmpresaRepositorio;
 import com.finance.manager.usuarioempresa.UsuarioRoles;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -41,7 +42,7 @@ public class LancamentoServico {
         this.pessoaRepositorio = pessoaRepositorio;
     }
 
-    public LancamentoResposta criarLancamentos(UUID usuarioId, UUID empresaId, UUID categoriaId, UUID pessoaId, LancamentoRequisicao requisicao) {
+    public LancamentoResposta criarLancamentos(UUID usuarioId, UUID empresaId, UUID categoriaId, UUID pessoaId, LancamentoRequisicao requisicao) throws BadRequestException {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
@@ -75,7 +76,15 @@ public class LancamentoServico {
         lancamento.setLancamentoPessoa(pessoa);
         lancamento.setLancamentoUsuario(usuario);
         lancamento.setMovimentacao(requisicao.movimentacaoTipo());
-        lancamento.setStatus(requisicao.status());
+        if(requisicao.status() == LancamentoStatus.PENDENTE || requisicao.status() == LancamentoStatus.VENCIDO) {
+            lancamento.setDataPagamento(null);
+            lancamento.setStatus(LancamentoStatus.PENDENTE);
+        } else {
+            lancamento.setStatus(requisicao.status());
+        }
+        if(requisicao.status() == LancamentoStatus.PAGO && lancamento.getDataPagamento() == null) {
+            throw new BadRequestException("A data de pagamento é obrigatória para lançamentos com status PAGO.");
+        }
         lancamento.setObservacao(requisicao.observacao());
 
         lancamentoRepositorio.save(lancamento);
@@ -136,7 +145,7 @@ public class LancamentoServico {
         return LancamentoResposta.from(resposta);
     }
 
-    public LancamentoResposta atualizarLancamentos(UUID usuarioId, UUID empresaId, UUID lancamentoId, UUID categoriaId, UUID pessoaId, LancamentoRequisicao requisicao) {
+    public LancamentoResposta atualizarLancamentos(UUID usuarioId, UUID empresaId, UUID lancamentoId, UUID categoriaId, UUID pessoaId, LancamentoRequisicao requisicao) throws BadRequestException {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
@@ -171,8 +180,16 @@ public class LancamentoServico {
         lancamento.setLancamentoPessoa(pessoa);
         lancamento.setLancamentoUsuario(usuario);
         if(requisicao.movimentacaoTipo() != null) lancamento.setMovimentacao(requisicao.movimentacaoTipo());
-        lancamento.setStatus(requisicao.status());
-        if(!requisicao.observacao().isEmpty()) lancamento.setObservacao(requisicao.observacao());
+        if(requisicao.status() == LancamentoStatus.PENDENTE || requisicao.status() == LancamentoStatus.VENCIDO) {
+            lancamento.setDataPagamento(null);
+            lancamento.setStatus(LancamentoStatus.PENDENTE);
+        } else {
+            lancamento.setStatus(requisicao.status());
+        }
+        if(requisicao.status() == LancamentoStatus.PAGO && lancamento.getDataPagamento() == null) {
+            throw new BadRequestException("A data de pagamento é obrigatória para lançamentos com status PAGO.");
+        }
+        if(requisicao.observacao() != null) lancamento.setObservacao(requisicao.observacao());
 
         lancamentoRepositorio.save(lancamento);
 

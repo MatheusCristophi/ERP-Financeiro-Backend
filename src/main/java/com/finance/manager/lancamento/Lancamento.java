@@ -9,6 +9,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnTransformer;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -38,6 +39,7 @@ public class Lancamento {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "lancamento_status", nullable = false)
+    @ColumnTransformer(write = "?::lancamento_status")
     private LancamentoStatus status;
 
     @Column(name = "lancamento_valor", nullable = false, precision = 12, scale = 2)
@@ -49,6 +51,7 @@ public class Lancamento {
 
     @Column(name = "lancamento_movimentacao", nullable = false)
     @Enumerated(EnumType.STRING)
+    @ColumnTransformer(write = "?::conta_movimentacao")
     private MovimentacaoTipo movimentacao;
 
     @ManyToOne(fetch = FetchType.LAZY)
