@@ -6,12 +6,23 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.nio.file.AccessDeniedException;
 
 @RestControllerAdvice
 public class GlobalHandler {
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ProblemDetail handleNaoEncontrado(NoResourceFoundException ex) {
+        ProblemDetail problemDetail =  ProblemDetail.forStatusAndDetail(
+                HttpStatus.NOT_FOUND,
+                "Página não encontrada, verifique a url e tente novamente por favor."
+        );
+        problemDetail.setInstance(null);
+        problemDetail.setType(java.net.URI.create("about:blank"));
+        return problemDetail;
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ProblemDetail handleAcessoNegado(AccessDeniedException ex) {
         ProblemDetail problemDetail =  ProblemDetail.forStatusAndDetail(
