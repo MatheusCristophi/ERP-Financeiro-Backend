@@ -7,6 +7,7 @@ import com.finance.manager.usuario.Usuario;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,6 +36,7 @@ public class ContaControlador {
     }
 
     @PostMapping
+    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
     public ResponseEntity<ContaResposta> criarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId,
                                                     @Valid
                                                     @RequestBody ContaRequisicao requisicao) {
@@ -43,6 +45,7 @@ public class ContaControlador {
     }
 
     @PutMapping("{contaId}")
+    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
     public ResponseEntity<ContaResposta> atualizarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId, @PathVariable UUID contaId,
                                                         @Valid
                                                         @RequestBody ContaRequisicao requisicao) {
@@ -51,6 +54,7 @@ public class ContaControlador {
     }
 
     @PatchMapping("{contaId}")
+    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
     public ResponseEntity<ContaResposta> desativarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId, @PathVariable UUID contaId) {
         this.contaServico.desativarConta(usuario.getUsuario().getId(), empresaId, contaId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

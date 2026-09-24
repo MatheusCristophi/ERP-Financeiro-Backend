@@ -7,6 +7,7 @@ import com.finance.manager.usuarioempresa.UsuarioRoles;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,6 +40,7 @@ public class UsuarioControlador {
     }
 
     @PostMapping
+    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
     public ResponseEntity<UsuarioResposta> criarUsuario(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                         @Valid
                                                         @RequestBody UsuarioRequisicao requisicao,
@@ -49,6 +51,7 @@ public class UsuarioControlador {
     }
 
     @PutMapping("/{roles}")
+    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
     public ResponseEntity<UsuarioResposta> atualizarUsuario(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                             @Valid
                                                             @RequestBody UsuarioRequisicao requisicao,
@@ -60,6 +63,7 @@ public class UsuarioControlador {
     }
 
     @PatchMapping
+    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
     public ResponseEntity<Void> desativarUsuario(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                             @RequestParam UUID usuarioId,
                                                             @RequestParam UUID empresaId) {
