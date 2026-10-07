@@ -1,5 +1,7 @@
 package com.finance.manager.seguranca;
 
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.finance.manager.excecoes.NaoEncontradoException;
 import com.finance.manager.usuario.UsuarioServico;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.UUID;
 
 @Component
 public class SecurityFiltro extends OncePerRequestFilter {
@@ -33,15 +36,22 @@ public class SecurityFiltro extends OncePerRequestFilter {
         String token = this.recuperarToken(request);
 
         if(token != null) {
-            String sub = tokenServico.validarToken(token);
-            if(sub != null) {
-                UserDetails user = usuarioServico.loadUserByUsername(sub);
-                var auth = new UsernamePasswordAuthenticationToken(
-                        user,
-                        null,
-                        user.getAuthorities()
-                );
-                SecurityContextHolder.getContext().setAuthentication(auth);
+            DecodedJWT jwt = tokenServico.validarToken(token);
+            String empresaClaim = jwt != null ? jwt.getClaim("empresaId").asString() : null;
+
+            if (empresaClaim != null) {
+                try {
+                    UsuarioAutenticado user = (UsuarioAutenticado) usuarioServico.loadUserByUsername(jwt.getSubject());
+                    user.setEmpresaId(UUID.fromString(empresaClaim));
+
+                    var auth = new UsernamePasswordAuthenticationToken(
+                            user,
+                            null,
+                            user.getAuthorities()
+                    );
+                    SecurityContextHolder.getContext().setAuthentication(auth);
+                } catch (NaoEncontradoException e) {
+                }
             }
         }
             filterChain.doFilter(request, response);

@@ -7,10 +7,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 public class UsuarioAutenticado implements UserDetails {
 
     private final Usuario usuario;
+    private UUID empresaId;
+
+    public UUID getEmpresaId() {
+        return this.empresaId;
+    }
+
+    public void setEmpresaId(UUID empresaId) {
+        this.empresaId = empresaId;
+    }
 
     public UsuarioAutenticado(Usuario usuario) {
         this.usuario = usuario;
