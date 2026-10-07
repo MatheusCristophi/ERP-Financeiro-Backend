@@ -4,13 +4,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.hibernate.validator.constraints.br.CNPJ;
 
 public record SecurityRequisicao(
 
-        @NotBlank(message = "O nome é obrigatório")
-        @Pattern(regexp = "^[a-zA-ZÀ-ÿ\\s]+$",
-                message = "O nome deve conter apenas letras")
-        String nome,
+        @CNPJ(message = "Cnpj inválido")
+        String cnpj,
 
         @NotBlank(message = "O e-mail é obrigatório")
         @Email(message = "E-mail inválido")

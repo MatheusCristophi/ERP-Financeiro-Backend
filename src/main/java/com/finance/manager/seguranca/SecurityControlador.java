@@ -1,6 +1,7 @@
 package com.finance.manager.seguranca;
 
 import com.finance.manager.seguranca.dtos.SecurityRequisicao;
+import com.finance.manager.seguranca.dtos.SecurityResposta;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,8 +23,8 @@ public class SecurityControlador {
     }
 
     @PostMapping
-    public ResponseEntity<String> logar(@Valid @RequestBody SecurityRequisicao requisicao) {
-        String token = securityServico.logar(requisicao);
+    public ResponseEntity<SecurityResposta> logar(@Valid @RequestBody SecurityRequisicao requisicao) {
+        SecurityResposta token = securityServico.logar(requisicao);
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 }

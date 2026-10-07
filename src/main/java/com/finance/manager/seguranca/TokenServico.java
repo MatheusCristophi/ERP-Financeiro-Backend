@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.util.UUID;
 
 @Service
 public class TokenServico {
@@ -15,11 +16,12 @@ public class TokenServico {
     @Value("${JWT_SEGREDO}")
     private String chaveSecreta;
 
-    public String gerarToken(UserDetails user) {
+    public String gerarToken(UserDetails user, UUID empresaId) {
         Algorithm algorithm = Algorithm.HMAC256(chaveSecreta);
         String token = JWT.create()
                 .withIssuer("erp-financeiro")
                 .withSubject(user.getUsername())
+                .withClaim("empresaId", empresaId.toString())
                 .withExpiresAt(expiracaoToken())
                 .sign(algorithm);
         return token;
