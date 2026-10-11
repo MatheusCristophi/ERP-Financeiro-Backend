@@ -28,6 +28,7 @@ public class SecurityConfiguracao {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         return http
+                .cors(cors -> cors.disable())
                 .csrf(auth -> auth.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
