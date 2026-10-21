@@ -4,6 +4,9 @@ import com.finance.manager.lancamento.dto.LancamentoRequisicao;
 import com.finance.manager.lancamento.dto.LancamentoResposta;
 import com.finance.manager.seguranca.UsuarioAutenticado;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,10 +26,12 @@ public class LancamentoControlador {
     }
 
     @GetMapping
-    public ResponseEntity<List<LancamentoResposta>> buscarLancamentos(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                                      @RequestParam UUID empresaId) {
-        List<LancamentoResposta> resposta = lancamentoServico.buscarTodosLancamentos(usuario.getUsuario().getId(), empresaId);
-        return ResponseEntity.ok(resposta);
+    public ResponseEntity<Page<LancamentoResposta>> buscarLancamentos(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                                      @RequestParam UUID empresaId,
+                                                                      @PageableDefault(page = 0, size = 10, sort = "data") Pageable pageable) {
+        Page<LancamentoResposta> resposta = lancamentoServico.buscarTodosLancamentos(usuario.getUsuario().getId(), empresaId, pageable);
+
+        return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 
     @GetMapping("pessoa/{pessoaId}")

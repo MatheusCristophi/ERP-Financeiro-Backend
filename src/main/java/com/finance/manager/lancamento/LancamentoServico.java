@@ -17,6 +17,8 @@ import com.finance.manager.usuarioempresa.UsuarioEmpresa;
 import com.finance.manager.usuarioempresa.UsuarioEmpresaRepositorio;
 import com.finance.manager.usuarioempresa.UsuarioRoles;
 import org.apache.coyote.BadRequestException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -92,7 +94,7 @@ public class LancamentoServico {
         return LancamentoResposta.from(lancamento);
     }
 
-    public List<LancamentoResposta> buscarTodosLancamentos(UUID usuarioId, UUID empresaId) {
+    public Page<LancamentoResposta> buscarTodosLancamentos(UUID usuarioId, UUID empresaId, Pageable pageable) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
@@ -102,9 +104,9 @@ public class LancamentoServico {
         UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresas.getId())
                 .orElseThrow(() -> new VinculoNaoEncontrado(usuarioId, empresaId));
 
-        List<Lancamento> resposta = lancamentoRepositorio.findAllByLancamentoEmpresa(empresas);
+        Page<Lancamento> resposta = lancamentoRepositorio.findAllByLancamentoEmpresa(empresas, pageable);
 
-        return LancamentoResposta.of(resposta);
+        return resposta.map(LancamentoResposta::from);
     }
 
     public List<LancamentoResposta> buscarLancamentosPorPessoa(UUID usuarioId, UUID empresaId, UUID pessoaId) {

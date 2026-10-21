@@ -2,6 +2,8 @@ package com.finance.manager.lancamento;
 
 import com.finance.manager.empresa.Empresas;
 import com.finance.manager.pessoa.Pessoa;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -10,6 +12,6 @@ import java.util.UUID;
 
 @Repository
 public interface LancamentoRepositorio extends JpaRepository<Lancamento, UUID> {
-    List<Lancamento> findAllByLancamentoEmpresa(Empresas empresa);
+    Page<Lancamento> findAllByLancamentoEmpresa(Empresas empresa, Pageable pageable);
     List<Lancamento> findAllByLancamentoPessoa(Pessoa pessoa);
 }
