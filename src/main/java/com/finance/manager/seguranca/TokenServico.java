@@ -41,7 +41,7 @@ public class TokenServico {
     }
 
     private Instant expiracaoToken() {
-        return Instant.now().plusSeconds(3600);
+        return Instant.now().plusSeconds(86400);
     }
 
 }

@@ -6,6 +6,9 @@ import com.finance.manager.seguranca.dtos.SecurityRequisicao;
 import com.finance.manager.seguranca.dtos.SecurityResposta;
 import com.finance.manager.usuarioempresa.UsuarioEmpresa;
 import com.finance.manager.usuarioempresa.UsuarioEmpresaRepositorio;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -29,7 +32,7 @@ public class SecurityServico {
         this.usuarioEmpresaRepositorio = usuarioEmpresaRepositorio;
     }
 
-    public SecurityResposta logar(SecurityRequisicao requisicao) {
+    public void logar(SecurityRequisicao requisicao, HttpServletResponse response) {
         UsernamePasswordAuthenticationToken userAndPass = new UsernamePasswordAuthenticationToken(requisicao.email(), requisicao.senha());
         Authentication auth = authenticationManager.getObject().authenticate(userAndPass);
         UserDetails details = (UserDetails) auth.getPrincipal();
@@ -44,6 +47,13 @@ public class SecurityServico {
                 .orElseThrow(() -> new BadCredentialsException("Dados inválidos"));
 
         String token = tokenServico.gerarToken(details, empresa.getId());
-        return new SecurityResposta(token, empresa.getId(), vinculo.getRole());
+
+        Cookie cookie = new Cookie("cookieToken", token);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(86400);
+
+        response.addCookie(cookie);
     }
 }

@@ -25,17 +25,15 @@ public class UsuarioControlador {
     }
 
     @GetMapping("/{empresaId}")
-    public ResponseEntity<List<UsuarioResposta>> buscarUsuarios(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                                @PathVariable UUID empresaId) {
-        List<UsuarioResposta> resposta = this.usuarioServico.buscarUsuarios(usuario.getUsuario().getId(), empresaId);
+    public ResponseEntity<List<UsuarioResposta>> buscarUsuarios(@AuthenticationPrincipal UsuarioAutenticado usuario) {
+        List<UsuarioResposta> resposta = this.usuarioServico.buscarUsuarios(usuario.getUsuario().getId(), usuario.getEmpresaId());
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 
     @GetMapping
     public ResponseEntity<UsuarioResposta> buscarUsuario(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                         @RequestParam UUID empresaId,
                                                          @RequestParam UUID usuarioId) {
-        UsuarioResposta resposta = this.usuarioServico.buscarUsuario(usuario.getUsuario().getId(), usuarioId, empresaId);
+        UsuarioResposta resposta = this.usuarioServico.buscarUsuario(usuario.getUsuario().getId(), usuarioId, usuario.getEmpresaId());
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 
@@ -44,9 +42,8 @@ public class UsuarioControlador {
     public ResponseEntity<UsuarioResposta> criarUsuario(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                         @Valid
                                                         @RequestBody UsuarioRequisicao requisicao,
-                                                        @RequestParam UsuarioRoles roles,
-                                                        @RequestParam UUID empresaId) {
-        UsuarioResposta resposta = this.usuarioServico.criarUsuario(usuario.getUsuario().getId(), requisicao, roles, empresaId);
+                                                        @RequestParam UsuarioRoles roles) {
+        UsuarioResposta resposta = this.usuarioServico.criarUsuario(usuario.getUsuario().getId(), requisicao, roles, usuario.getEmpresaId());
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
 
@@ -56,18 +53,16 @@ public class UsuarioControlador {
                                                             @Valid
                                                             @RequestBody UsuarioRequisicao requisicao,
                                                             @PathVariable UsuarioRoles roles,
-                                                            @RequestParam UUID usuarioId,
-                                                            @RequestParam UUID empresaId){
-        UsuarioResposta resposta = this.usuarioServico.atualizarUsuario(usuario.getUsuario().getId(),usuarioId, roles, requisicao, empresaId);
+                                                            @RequestParam UUID usuarioId){
+        UsuarioResposta resposta = this.usuarioServico.atualizarUsuario(usuario.getUsuario().getId(),usuarioId, roles, requisicao, usuario.getEmpresaId());
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 
     @PatchMapping
     @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
     public ResponseEntity<Void> desativarUsuario(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                            @RequestParam UUID usuarioId,
-                                                            @RequestParam UUID empresaId) {
-        this.usuarioServico.desativarUsuario(usuario.getUsuario().getId(), usuarioId, empresaId);
+                                                            @RequestParam UUID usuarioId) {
+        this.usuarioServico.desativarUsuario(usuario.getUsuario().getId(), usuarioId, usuario.getEmpresaId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

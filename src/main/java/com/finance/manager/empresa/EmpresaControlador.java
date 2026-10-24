@@ -3,7 +3,6 @@ package com.finance.manager.empresa;
 import com.finance.manager.empresa.dto.EmpresaRequisicao;
 import com.finance.manager.empresa.dto.EmpresaResposta;
 import com.finance.manager.seguranca.UsuarioAutenticado;
-import com.finance.manager.usuario.Usuario;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,19 +41,16 @@ public class EmpresaControlador {
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
 
-    @PutMapping("{empresaId}")
-    public ResponseEntity<EmpresaResposta> atualizarEmpresa(@PathVariable UUID empresaId,
-                                                            @Valid
-                                                            @RequestBody EmpresaRequisicao requisicao,
+    @PutMapping
+    public ResponseEntity<EmpresaResposta> atualizarEmpresa(@Valid @RequestBody EmpresaRequisicao requisicao,
                                                             @AuthenticationPrincipal UsuarioAutenticado usuario) {
-        EmpresaResposta resposta = this.empresaServico.atualizarEmpresaCompleta(empresaId, usuario.getUsuario().getId(), requisicao);
+        EmpresaResposta resposta = this.empresaServico.atualizarEmpresaCompleta(usuario.getEmpresaId(), usuario.getUsuario().getId(), requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 
-    @PatchMapping("{empresaId}")
-    public ResponseEntity<Void> desativarEmpresa(@PathVariable UUID empresaId,
-                                                 @AuthenticationPrincipal UsuarioAutenticado usuario) {
-        this.empresaServico.desativarEmpresa(usuario.getUsuario().getId(), empresaId);
+    @PatchMapping
+    public ResponseEntity<Void> desativarEmpresa(@AuthenticationPrincipal UsuarioAutenticado usuario) {
+        this.empresaServico.desativarEmpresa(usuario.getUsuario().getId(), usuario.getEmpresaId());
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

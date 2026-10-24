@@ -27,55 +27,49 @@ public class LancamentoControlador {
 
     @GetMapping
     public ResponseEntity<Page<LancamentoResposta>> buscarLancamentos(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                                      @RequestParam UUID empresaId,
                                                                       @PageableDefault(page = 0, size = 10, sort = "data") Pageable pageable) {
-        Page<LancamentoResposta> resposta = lancamentoServico.buscarTodosLancamentos(usuario.getUsuario().getId(), empresaId, pageable);
+        Page<LancamentoResposta> resposta = lancamentoServico.buscarTodosLancamentos(usuario.getUsuario().getId(), usuario.getEmpresaId(), pageable);
 
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 
     @GetMapping("pessoa/{pessoaId}")
     public ResponseEntity<List<LancamentoResposta>> buscarLancamentosPorPessoa(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                                               @RequestParam UUID empresaId,
                                                                                @PathVariable UUID pessoaId) {
-        List<LancamentoResposta> resposta = lancamentoServico.buscarLancamentosPorPessoa(usuario.getUsuario().getId(), empresaId, pessoaId);
+        List<LancamentoResposta> resposta = lancamentoServico.buscarLancamentosPorPessoa(usuario.getUsuario().getId(), usuario.getEmpresaId(), pessoaId);
         return ResponseEntity.ok(resposta);
     }
 
     @GetMapping("{lancamentoId}")
     public ResponseEntity<LancamentoResposta> buscarLancamentoPorId(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                                    @RequestParam UUID empresaId,
                                                                     @PathVariable UUID lancamentoId) {
-        LancamentoResposta resposta = lancamentoServico.buscarLancamentoPorId(usuario.getUsuario().getId(), empresaId, lancamentoId);
+        LancamentoResposta resposta = lancamentoServico.buscarLancamentoPorId(usuario.getUsuario().getId(), usuario.getEmpresaId(), lancamentoId);
         return ResponseEntity.ok(resposta);
     }
 
     @PostMapping
     public ResponseEntity<LancamentoResposta> criarLancamento(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                              @RequestParam UUID empresaId,
                                                               @RequestParam UUID categoriaId,
                                                               @RequestParam UUID pessoaId,
                                                               @RequestBody LancamentoRequisicao requisicao) throws BadRequestException {
-        LancamentoResposta resposta = lancamentoServico.criarLancamentos(usuario.getUsuario().getId(), empresaId, categoriaId, pessoaId, requisicao);
+        LancamentoResposta resposta = lancamentoServico.criarLancamentos(usuario.getUsuario().getId(), usuario.getEmpresaId(), categoriaId, pessoaId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
 
     @PutMapping("{lancamentoId}")
     public ResponseEntity<LancamentoResposta> atualizarLancamento(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                                  @RequestParam UUID empresaId,
                                                                   @PathVariable UUID lancamentoId,
                                                                   @RequestParam UUID categoriaId,
                                                                   @RequestParam UUID pessoaId,
                                                                   @RequestBody LancamentoRequisicao requisicao) throws BadRequestException {
-        LancamentoResposta resposta = lancamentoServico.atualizarLancamentos(usuario.getUsuario().getId(), empresaId, lancamentoId, categoriaId, pessoaId, requisicao);
+        LancamentoResposta resposta = lancamentoServico.atualizarLancamentos(usuario.getUsuario().getId(), usuario.getEmpresaId(), lancamentoId, categoriaId, pessoaId, requisicao);
         return ResponseEntity.ok(resposta);
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deletarLancamento(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                  @RequestParam UUID empresaId,
                                                   @RequestParam UUID lancamentoId) {
-        lancamentoServico.deletarLancamento(usuario.getUsuario().getId(), empresaId, lancamentoId);
+        lancamentoServico.deletarLancamento(usuario.getUsuario().getId(), usuario.getEmpresaId(), lancamentoId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

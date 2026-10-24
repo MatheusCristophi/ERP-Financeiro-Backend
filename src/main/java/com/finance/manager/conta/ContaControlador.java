@@ -24,39 +24,37 @@ public class ContaControlador {
     }
 
     @GetMapping
-    public ResponseEntity<List<ContaResposta>> buscarTodasAsContas(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId) {
-        List<ContaResposta> resposta = this.contaServico.buscarTodasAsContas(usuario.getUsuario().getId(), empresaId);
+    public ResponseEntity<List<ContaResposta>> buscarTodasAsContas(@AuthenticationPrincipal UsuarioAutenticado usuario) {
+        List<ContaResposta> resposta = this.contaServico.buscarTodasAsContas(usuario.getUsuario().getId(), usuario.getEmpresaId());
         return ResponseEntity.ok(resposta);
     }
 
     @GetMapping("{contaId}")
-    public ResponseEntity<ContaResposta> buscarContaPeloId(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId, @PathVariable UUID contaId) {
-        ContaResposta resposta = this.contaServico.buscarConta(usuario.getUsuario().getId(), empresaId, contaId);
+    public ResponseEntity<ContaResposta> buscarContaPeloId(@AuthenticationPrincipal UsuarioAutenticado usuario, @PathVariable UUID contaId) {
+        ContaResposta resposta = this.contaServico.buscarConta(usuario.getUsuario().getId(), usuario.getEmpresaId(), contaId);
         return ResponseEntity.ok(resposta);
     }
 
     @PostMapping
     @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
-    public ResponseEntity<ContaResposta> criarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId,
-                                                    @Valid
-                                                    @RequestBody ContaRequisicao requisicao) {
-        ContaResposta resposta = this.contaServico.criarConta(usuario.getUsuario().getId(), empresaId, requisicao);
+    public ResponseEntity<ContaResposta> criarConta(@AuthenticationPrincipal UsuarioAutenticado usuario,
+                                                    @Valid @RequestBody ContaRequisicao requisicao) {
+        ContaResposta resposta = this.contaServico.criarConta(usuario.getUsuario().getId(), usuario.getEmpresaId(), requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
 
     @PutMapping("{contaId}")
     @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
-    public ResponseEntity<ContaResposta> atualizarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId, @PathVariable UUID contaId,
-                                                        @Valid
-                                                        @RequestBody ContaRequisicao requisicao) {
-        ContaResposta resposta = this.contaServico.atualizarConta(usuario.getUsuario().getId(), empresaId, contaId, requisicao);
+    public ResponseEntity<ContaResposta> atualizarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @PathVariable UUID contaId,
+                                                        @Valid @RequestBody ContaRequisicao requisicao) {
+        ContaResposta resposta = this.contaServico.atualizarConta(usuario.getUsuario().getId(), usuario.getEmpresaId(), contaId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 
     @PatchMapping("{contaId}")
     @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
-    public ResponseEntity<ContaResposta> desativarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @RequestParam UUID empresaId, @PathVariable UUID contaId) {
-        this.contaServico.desativarConta(usuario.getUsuario().getId(), empresaId, contaId);
+    public ResponseEntity<ContaResposta> desativarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @PathVariable UUID contaId) {
+        this.contaServico.desativarConta(usuario.getUsuario().getId(), usuario.getEmpresaId(), contaId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

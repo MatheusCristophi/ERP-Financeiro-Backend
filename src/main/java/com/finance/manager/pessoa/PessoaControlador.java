@@ -22,46 +22,41 @@ public class PessoaControlador {
         this.pessoaServico = pessoaServico;
     }
 
-    @PostMapping("/{empresaId}")
+    @PostMapping
     public ResponseEntity<PessoaResposta> criarPessoa(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                      @PathVariable UUID empresaId,
                                                       @Valid @RequestBody PessoaRequisicao requisicao) {
-        PessoaResposta resposta = pessoaServico.criarPessoa(usuario.getUsuario().getId(), empresaId, requisicao);
+        PessoaResposta resposta = pessoaServico.criarPessoa(usuario.getUsuario().getId(), usuario.getEmpresaId(), requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
 
     @GetMapping
-    public ResponseEntity<List<PessoaResposta>> buscarTodasPessoas(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                                   @RequestParam UUID empresaId) {
-        List<PessoaResposta> resposta = pessoaServico.buscarTodasAsPessoas(usuario.getUsuario().getId(), empresaId);
+    public ResponseEntity<List<PessoaResposta>> buscarTodasPessoas(@AuthenticationPrincipal UsuarioAutenticado usuario) {
+        List<PessoaResposta> resposta = pessoaServico.buscarTodasAsPessoas(usuario.getUsuario().getId(), usuario.getEmpresaId());
 
         return ResponseEntity.ok(resposta);
     }
 
     @GetMapping("/{pessoaId}")
     public ResponseEntity<PessoaResposta> buscarPessoaPorId(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                            @RequestParam UUID empresaId,
                                                             @PathVariable UUID pessoaId) {
-        PessoaResposta resposta = pessoaServico.buscarPessoaPeloId(usuario.getUsuario().getId(), empresaId, pessoaId);
+        PessoaResposta resposta = pessoaServico.buscarPessoaPeloId(usuario.getUsuario().getId(), usuario.getEmpresaId(), pessoaId);
 
         return ResponseEntity.ok(resposta);
     }
 
     @PutMapping("/{pessoaId}")
     public ResponseEntity<PessoaResposta> atualizarPessoa(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                          @RequestParam UUID empresaId,
                                                           @PathVariable UUID pessoaId,
                                                           @Valid @RequestBody PessoaRequisicao requisicao) {
-        PessoaResposta resposta = pessoaServico.atualizarDadosDaPessoa(usuario.getUsuario().getId(), empresaId, pessoaId, requisicao);
+        PessoaResposta resposta = pessoaServico.atualizarDadosDaPessoa(usuario.getUsuario().getId(), usuario.getEmpresaId(), pessoaId, requisicao);
 
         return ResponseEntity.ok(resposta);
     }
 
     @PatchMapping("/{pessoaId}")
     public ResponseEntity<Void> desativarPessoa(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                @RequestParam UUID empresaId,
                                                 @PathVariable UUID pessoaId) {
-        pessoaServico.desativarPessoa(usuario.getUsuario().getId(), empresaId, pessoaId);
+        pessoaServico.desativarPessoa(usuario.getUsuario().getId(), usuario.getEmpresaId(), pessoaId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
