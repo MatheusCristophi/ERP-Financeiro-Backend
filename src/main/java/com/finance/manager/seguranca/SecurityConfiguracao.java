@@ -4,6 +4,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,12 +29,11 @@ public class SecurityConfiguracao {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         return http
-                .cors(cors -> cors.configure(http))
+                .cors(Customizer.withDefaults())
                 .csrf(auth -> auth.disable())
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(url -> url
-
                         .anyRequest().permitAll())
                 .addFilterBefore(securityFiltro.getObject(), UsernamePasswordAuthenticationFilter.class)
                 .build();

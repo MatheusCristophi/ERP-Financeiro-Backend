@@ -3,13 +3,13 @@ package com.finance.manager.seguranca;
 import com.finance.manager.empresa.EmpresaRepositorio;
 import com.finance.manager.empresa.Empresas;
 import com.finance.manager.seguranca.dtos.SecurityRequisicao;
-import com.finance.manager.seguranca.dtos.SecurityResposta;
 import com.finance.manager.usuarioempresa.UsuarioEmpresa;
 import com.finance.manager.usuarioempresa.UsuarioEmpresaRepositorio;
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,12 +48,24 @@ public class SecurityServico {
 
         String token = tokenServico.gerarToken(details, empresa.getId());
 
-        Cookie cookie = new Cookie("cookieToken", token);
-        cookie.setHttpOnly(true);
-        cookie.setSecure(true);
-        cookie.setPath("/");
-        cookie.setMaxAge(86400);
+        ResponseCookie cookie = ResponseCookie.from("cookieToken", token)
+                .httpOnly(true)
+                .secure(true) //True por conta do backend estar hospedado no Render, que é HTTPS. Se for para localhost, mudar para false
+                .sameSite("None") //temporário para funcionar no localhost, depois mudar para "Lax"
+                .path("/")
+                .maxAge(86400)
+                .build();
 
-        response.addCookie(cookie);
+        response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
+    }
+
+    public void logout(HttpServletResponse response) {
+        ResponseCookie apagar = ResponseCookie.from("cookieToken", "")
+                .httpOnly(true)
+                .secure(true) //True por conta do backend estar hospedado no Render, que é HTTPS. Se for para localhost, mudar para false
+                .sameSite("None") //temporário para funcionar no localhost, depois mudar para "Lax"
+                .path("/").maxAge(0)
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, apagar.toString());
     }
 }

@@ -7,7 +7,6 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CNPJ;
 
 public record SecurityRequisicao(
-
         @CNPJ(message = "Cnpj inválido")
         String cnpj,
 
