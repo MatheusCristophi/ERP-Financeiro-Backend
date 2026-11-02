@@ -48,6 +48,8 @@ public class SecurityServico {
 
         String token = tokenServico.gerarToken(details, empresa.getId());
 
+        usuario.setEmpresaId(empresa.getId());
+
         ResponseCookie cookie = ResponseCookie.from("cookieToken", token)
                 .httpOnly(true)
                 .secure(true) //True por conta do backend estar hospedado no Render, que é HTTPS. Se for para localhost, mudar para false

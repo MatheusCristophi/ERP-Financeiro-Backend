@@ -10,14 +10,16 @@ public record PessoaResposta (
         String nome,
         String cpf,
         String cnpj,
-        PessoaTipo tipo
+        PessoaTipo tipo,
+        boolean status
 ) {
     public static PessoaResposta from(Pessoa pessoa) {
         return new PessoaResposta(
                 pessoa.getNome(),
                 Objects.toString(pessoa.getCpf(), ""),
                 Objects.toString(pessoa.getCnpj(), ""),
-                pessoa.getTipo()
+                pessoa.getTipo(),
+                pessoa.isStatus()
         );
     }
 

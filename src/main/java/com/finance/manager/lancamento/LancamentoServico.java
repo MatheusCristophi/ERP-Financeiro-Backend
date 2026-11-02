@@ -44,7 +44,7 @@ public class LancamentoServico {
         this.pessoaRepositorio = pessoaRepositorio;
     }
 
-    public LancamentoResposta criarLancamentos(UUID usuarioId, UUID empresaId, UUID categoriaId, UUID pessoaId, LancamentoRequisicao requisicao) throws BadRequestException {
+    public LancamentoResposta criarLancamentos(UUID usuarioId, UUID empresaId, UUID pessoaId, LancamentoRequisicao requisicao) throws BadRequestException {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
@@ -56,7 +56,7 @@ public class LancamentoServico {
 
         if(vinculo.getRole() == UsuarioRoles.CONSULTOR) throw new SemPermissaoException(usuario.getNome());
 
-        Categoria categoria = categoriaRepositorio.findById(categoriaId)
+        Categoria categoria = categoriaRepositorio.findById(requisicao.categoria())
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
 
         if(!categoria.getCategoriaEmpresa().equals(empresas)) throw new NaoEncontradoException("a Categoria");

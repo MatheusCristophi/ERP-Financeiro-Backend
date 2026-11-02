@@ -89,6 +89,8 @@ public class PessoaServico {
         Pessoa resposta = pessoaRepositorio.findById(pessoaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Pessoa"));
 
+        if(!resposta.getPessoaEmpresa().equals(empresa)) throw new NaoEncontradoException("a Pessoa");
+
         return PessoaResposta.from(resposta);
     }
 
@@ -107,6 +109,8 @@ public class PessoaServico {
 
         Pessoa pessoa = pessoaRepositorio.findById(pessoaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Pessoa"));
+
+        if(!pessoa.getPessoaEmpresa().equals(empresa)) throw new NaoEncontradoException("a Pessoa");
 
         if(!requisicao.cnpj().isEmpty()) pessoa.setCnpj(requisicao.cnpj());
         if(!requisicao.cpf().isEmpty()) pessoa.setCpf(requisicao.cpf());

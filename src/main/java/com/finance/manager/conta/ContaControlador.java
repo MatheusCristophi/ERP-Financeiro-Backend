@@ -36,7 +36,7 @@ public class ContaControlador {
     }
 
     @PostMapping
-    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
+    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #usuario.empresaId)")
     public ResponseEntity<ContaResposta> criarConta(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                     @Valid @RequestBody ContaRequisicao requisicao) {
         ContaResposta resposta = this.contaServico.criarConta(usuario.getUsuario().getId(), usuario.getEmpresaId(), requisicao);
@@ -44,7 +44,7 @@ public class ContaControlador {
     }
 
     @PutMapping("{contaId}")
-    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
+    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #usuario.empresaId)")
     public ResponseEntity<ContaResposta> atualizarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @PathVariable UUID contaId,
                                                         @Valid @RequestBody ContaRequisicao requisicao) {
         ContaResposta resposta = this.contaServico.atualizarConta(usuario.getUsuario().getId(), usuario.getEmpresaId(), contaId, requisicao);
@@ -52,7 +52,7 @@ public class ContaControlador {
     }
 
     @PatchMapping("{contaId}")
-    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
+    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #usuario.empresaId)")
     public ResponseEntity<ContaResposta> desativarConta(@AuthenticationPrincipal UsuarioAutenticado usuario, @PathVariable UUID contaId) {
         this.contaServico.desativarConta(usuario.getUsuario().getId(), usuario.getEmpresaId(), contaId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -24,21 +24,21 @@ public class UsuarioControlador {
         this.usuarioServico = usuarioServico;
     }
 
-    @GetMapping("/{empresaId}")
+    @GetMapping
     public ResponseEntity<List<UsuarioResposta>> buscarUsuarios(@AuthenticationPrincipal UsuarioAutenticado usuario) {
         List<UsuarioResposta> resposta = this.usuarioServico.buscarUsuarios(usuario.getUsuario().getId(), usuario.getEmpresaId());
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 
-    @GetMapping
+    @GetMapping("/{usuarioId}")
     public ResponseEntity<UsuarioResposta> buscarUsuario(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                         @RequestParam UUID usuarioId) {
+                                                         @PathVariable UUID usuarioId) {
         UsuarioResposta resposta = this.usuarioServico.buscarUsuario(usuario.getUsuario().getId(), usuarioId, usuario.getEmpresaId());
         return new ResponseEntity<>(resposta, HttpStatus.OK);
     }
 
     @PostMapping
-    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
+    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #usuario.empresaId)")
     public ResponseEntity<UsuarioResposta> criarUsuario(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                         @Valid
                                                         @RequestBody UsuarioRequisicao requisicao,
@@ -48,7 +48,7 @@ public class UsuarioControlador {
     }
 
     @PutMapping("/{roles}")
-    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
+    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #usuario.empresaId)")
     public ResponseEntity<UsuarioResposta> atualizarUsuario(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                             @Valid
                                                             @RequestBody UsuarioRequisicao requisicao,
@@ -59,7 +59,7 @@ public class UsuarioControlador {
     }
 
     @PatchMapping
-    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #empresaId)")
+    @PreAuthorize("@buscarRoleService.ehDonoOuAdmin(#usuario.usuario.id, #usuario.empresaId)")
     public ResponseEntity<Void> desativarUsuario(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                             @RequestParam UUID usuarioId) {
         this.usuarioServico.desativarUsuario(usuario.getUsuario().getId(), usuarioId, usuario.getEmpresaId());

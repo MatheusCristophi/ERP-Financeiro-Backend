@@ -88,6 +88,8 @@ public class CategoriaServico {
         Categoria resposta = categoriaRepositorio.findById(categoriaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
 
+        if(!resposta.getCategoriaEmpresa().equals(empresaAtual)) throw new NaoEncontradoException("a Categoria");
+
         return CategoriaResposta.from(resposta);
     }
 

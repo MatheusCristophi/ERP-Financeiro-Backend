@@ -140,6 +140,8 @@ public class ContaServico {
         Conta conta = contaRepositorio.findById(contaId)
                 .orElseThrow(() -> new NaoEncontradoException("a Conta"));
 
+        if(!conta.getContaEmpresa().equals(empresa)) throw new NaoEncontradoException("a Conta");
+
         conta.setStatus(false);
     }
 }

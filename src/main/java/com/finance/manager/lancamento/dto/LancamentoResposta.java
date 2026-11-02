@@ -7,8 +7,10 @@ import com.finance.manager.lancamento.LancamentoStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
-public record LancamentoResposta(String descricao,
+public record LancamentoResposta(UUID id,
+                                 String descricao,
                                  LancamentoStatus status,
                                  BigDecimal valor,
                                  String categoria,
@@ -21,6 +23,7 @@ public record LancamentoResposta(String descricao,
 
     public static LancamentoResposta from(Lancamento lancamento) {
         return  new LancamentoResposta(
+                lancamento.getId(),
                 lancamento.getDescricao(),
                 lancamento.getStatus(),
                 lancamento.getValor(),

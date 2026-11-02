@@ -5,22 +5,27 @@ import com.finance.manager.conta.ContaTipo;
 import com.finance.manager.conta.MovimentacaoTipo;
 
 import java.util.List;
+import java.util.UUID;
 
 public record ContaResposta(
+        UUID id,
         String descricao,
         ContaTipo contaTipo,
         MovimentacaoTipo movimentacaoTipo,
         String numero,
-        String agencia
+        String agencia,
+        Boolean status
 ){
 
     public static ContaResposta from(Conta conta) {
         return new ContaResposta(
+                conta.getId(),
                 conta.getDescricao(),
                 conta.getContaTipo(),
                 conta.getContaMovimentacao(),
                 conta.getNumero(),
-                conta.getAgencia()
+                conta.getAgencia(),
+                conta.isStatus()
         );
     }
 

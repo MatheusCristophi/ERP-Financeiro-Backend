@@ -27,7 +27,7 @@ public class LancamentoControlador {
 
     @GetMapping
     public ResponseEntity<Page<LancamentoResposta>> buscarLancamentos(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                                      @PageableDefault(page = 0, size = 10, sort = "data") Pageable pageable) {
+                                                                      @PageableDefault(page = 0, size = 10, sort = "dataEmissao") Pageable pageable) {
         Page<LancamentoResposta> resposta = lancamentoServico.buscarTodosLancamentos(usuario.getUsuario().getId(), usuario.getEmpresaId(), pageable);
 
         return new ResponseEntity<>(resposta, HttpStatus.OK);
@@ -49,10 +49,9 @@ public class LancamentoControlador {
 
     @PostMapping
     public ResponseEntity<LancamentoResposta> criarLancamento(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                              @RequestParam UUID categoriaId,
                                                               @RequestParam UUID pessoaId,
                                                               @RequestBody LancamentoRequisicao requisicao) throws BadRequestException {
-        LancamentoResposta resposta = lancamentoServico.criarLancamentos(usuario.getUsuario().getId(), usuario.getEmpresaId(), categoriaId, pessoaId, requisicao);
+        LancamentoResposta resposta = lancamentoServico.criarLancamentos(usuario.getUsuario().getId(), usuario.getEmpresaId(), pessoaId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }
 
