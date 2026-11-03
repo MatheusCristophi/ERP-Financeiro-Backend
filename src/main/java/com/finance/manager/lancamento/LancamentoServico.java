@@ -71,7 +71,15 @@ public class LancamentoServico {
         lancamento.setDescricao(requisicao.descricao());
         lancamento.setValor(requisicao.valor());
         lancamento.setDataEmissao(requisicao.dataEmissao());
+        if(lancamento.getDataVencimento().isBefore(lancamento.getDataEmissao()))
+            throw new BadRequestException("Data de validade não pode ser menor que a de emissão");
         lancamento.setDataVencimento(requisicao.dataVencimento());
+        if (requisicao.dataPagamento() != null) {
+            if (requisicao.dataPagamento().isBefore(lancamento.getDataEmissao())) {
+                throw new BadRequestException("Data de pagamento não pode ser menor que a de emissão");
+            }
+            lancamento.setDataPagamento(requisicao.dataPagamento());
+        }
         lancamento.setDataPagamento(requisicao.dataPagamento());
         lancamento.setLancamentoCategoria(categoria);
         lancamento.setLancamentoEmpresa(empresas);
@@ -84,9 +92,11 @@ public class LancamentoServico {
         } else {
             lancamento.setStatus(requisicao.status());
         }
-        if(requisicao.status() == LancamentoStatus.PAGO && lancamento.getDataPagamento() == null) {
+
+        if (lancamento.getStatus() == LancamentoStatus.PAGO && lancamento.getDataPagamento() == null) {
             throw new BadRequestException("A data de pagamento é obrigatória para lançamentos com status PAGO.");
         }
+
         lancamento.setObservacao(requisicao.observacao());
 
         lancamentoRepositorio.save(lancamento);
