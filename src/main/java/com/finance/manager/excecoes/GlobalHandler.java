@@ -94,7 +94,7 @@ public class GlobalHandler {
     @ExceptionHandler(SemPermissaoException.class)
     public ProblemDetail handleSemPermissao(SemPermissaoException exception) {
         ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
-                HttpStatus.NOT_FOUND,
+                HttpStatus.FORBIDDEN,
                 exception.getMessage()
         );
 

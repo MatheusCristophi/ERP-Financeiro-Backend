@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("auth")
-@PreAuthorize("permitAll()")
 public class SecurityControlador {
 
     private final SecurityServico securityServico;
@@ -28,6 +27,7 @@ public class SecurityControlador {
     }
 
     @PostMapping
+    @PreAuthorize("permitAll()")
     public ResponseEntity<Void> logar(@Valid @RequestBody SecurityRequisicao requisicao, HttpServletResponse response) {
         securityServico.logar(requisicao, response);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -46,6 +46,7 @@ public class SecurityControlador {
     }
 
     @PostMapping("/logout")
+    @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Void> logout(HttpServletResponse response) {
         securityServico.logout(response);
 
