@@ -54,7 +54,7 @@ public class LancamentoServico {
         UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresas.getId())
                 .orElseThrow(() -> new VinculoNaoEncontrado(usuarioId, empresaId));
 
-        if(vinculo.getRole() == UsuarioRoles.CONSULTOR) throw new SemPermissaoException(usuario.getNome());
+        if(vinculo.getRole().equals(UsuarioRoles.CONSULTOR)) throw new SemPermissaoException(usuario.getNome());
 
         Categoria categoria = categoriaRepositorio.findById(requisicao.categoria())
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
@@ -155,7 +155,7 @@ public class LancamentoServico {
         return LancamentoResposta.from(resposta);
     }
 
-    public LancamentoResposta atualizarLancamentos(UUID usuarioId, UUID empresaId, UUID lancamentoId, UUID categoriaId, UUID pessoaId, LancamentoRequisicao requisicao) {
+    public LancamentoResposta atualizarLancamentos(UUID usuarioId, UUID empresaId, UUID lancamentoId, UUID pessoaId, LancamentoRequisicao requisicao) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
@@ -167,7 +167,7 @@ public class LancamentoServico {
 
         if(vinculo.getRole() == UsuarioRoles.CONSULTOR) throw new SemPermissaoException(usuario.getNome());
 
-        Categoria categoria = categoriaRepositorio.findById(categoriaId)
+        Categoria categoria = categoriaRepositorio.findById(requisicao.categoria())
                 .orElseThrow(() -> new NaoEncontradoException("a Categoria"));
 
         if(!categoria.getCategoriaEmpresa().equals(empresas)) throw new NaoEncontradoException("a Categoria");
@@ -216,7 +216,7 @@ public class LancamentoServico {
         UsuarioEmpresa vinculo = usuarioEmpresaRepositorio.findByUsuarioIdAndEmpresaId(usuario.getId(), empresas.getId())
                 .orElseThrow(() -> new VinculoNaoEncontrado(usuarioId, empresaId));
 
-        if(vinculo.getRole() == UsuarioRoles.CONSULTOR) throw new SemPermissaoException(usuario.getNome());
+        if(vinculo.getRole().equals(UsuarioRoles.CONSULTOR)) throw new SemPermissaoException(usuario.getNome());
 
         Lancamento lancamento = lancamentoRepositorio.findById(lancamentoId)
                 .orElseThrow(() -> new NaoEncontradoException("o Lançamento"));

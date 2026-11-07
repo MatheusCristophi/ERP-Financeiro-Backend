@@ -49,7 +49,7 @@ public class LancamentoControlador {
 
     @PostMapping
     public ResponseEntity<LancamentoResposta> criarLancamento(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                              @RequestParam UUID pessoaId,
+                                                              @RequestParam(name = "id") UUID pessoaId,
                                                               @RequestBody LancamentoRequisicao requisicao) {
         LancamentoResposta resposta = lancamentoServico.criarLancamentos(usuario.getUsuario().getId(), usuario.getEmpresaId(), pessoaId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
@@ -58,16 +58,15 @@ public class LancamentoControlador {
     @PutMapping("{lancamentoId}")
     public ResponseEntity<LancamentoResposta> atualizarLancamento(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                                   @PathVariable UUID lancamentoId,
-                                                                  @RequestParam UUID categoriaId,
-                                                                  @RequestParam UUID pessoaId,
+                                                                  @RequestParam(name = "id") UUID pessoaId,
                                                                   @RequestBody LancamentoRequisicao requisicao) {
-        LancamentoResposta resposta = lancamentoServico.atualizarLancamentos(usuario.getUsuario().getId(), usuario.getEmpresaId(), lancamentoId, categoriaId, pessoaId, requisicao);
+        LancamentoResposta resposta = lancamentoServico.atualizarLancamentos(usuario.getUsuario().getId(), usuario.getEmpresaId(), lancamentoId, pessoaId, requisicao);
         return ResponseEntity.ok(resposta);
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deletarLancamento(@AuthenticationPrincipal UsuarioAutenticado usuario,
-                                                  @RequestParam UUID lancamentoId) {
+                                                  @RequestParam(name = "id") UUID lancamentoId) {
         lancamentoServico.deletarLancamento(usuario.getUsuario().getId(), usuario.getEmpresaId(), lancamentoId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
