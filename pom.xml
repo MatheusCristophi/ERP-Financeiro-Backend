@@ -87,7 +87,7 @@
 			<version>4.6.0</version>
 		</dependency>
 
-        <!--Testes Automatizados-->
+        <!--Testes-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

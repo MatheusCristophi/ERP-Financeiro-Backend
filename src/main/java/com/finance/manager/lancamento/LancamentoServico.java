@@ -80,7 +80,6 @@ public class LancamentoServico {
             }
             lancamento.setDataPagamento(requisicao.dataPagamento());
         }
-        lancamento.setDataPagamento(requisicao.dataPagamento());
         lancamento.setLancamentoCategoria(categoria);
         lancamento.setLancamentoEmpresa(empresas);
         lancamento.setLancamentoPessoa(pessoa);
@@ -88,10 +87,9 @@ public class LancamentoServico {
         lancamento.setMovimentacao(requisicao.movimentacaoTipo());
         if(requisicao.status() == LancamentoStatus.PENDENTE || requisicao.status() == LancamentoStatus.VENCIDO) {
             lancamento.setDataPagamento(null);
-            lancamento.setStatus(LancamentoStatus.PENDENTE);
-        } else {
-            lancamento.setStatus(requisicao.status());
         }
+
+        lancamento.setStatus(requisicao.status());
 
         if (lancamento.getStatus() == LancamentoStatus.PAGO && lancamento.getDataPagamento() == null) {
             throw new BadRequestException("A data de pagamento é obrigatória para lançamentos com status PAGO.");
