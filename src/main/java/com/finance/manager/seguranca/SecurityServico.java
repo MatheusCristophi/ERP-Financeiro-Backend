@@ -52,8 +52,8 @@ public class SecurityServico {
 
         ResponseCookie cookie = ResponseCookie.from("cookieToken", token)
                 .httpOnly(true)
-                .secure(true) //True por conta do backend estar hospedado no Render, que é HTTPS. Se for para localhost, mudar para false
-                .sameSite("None") //temporário para funcionar no localhost, depois mudar para "Lax"
+                .secure(true)
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(86400)
                 .build();
@@ -64,8 +64,8 @@ public class SecurityServico {
     public void logout(HttpServletResponse response) {
         ResponseCookie apagar = ResponseCookie.from("cookieToken", "")
                 .httpOnly(true)
-                .secure(true) //True por conta do backend estar hospedado no Render, que é HTTPS. Se for para localhost, mudar para false
-                .sameSite("None") //temporário para funcionar no localhost, depois mudar para "Lax"
+                .secure(true)
+                .sameSite("Lax")
                 .path("/").maxAge(0)
                 .build();
         response.addHeader(HttpHeaders.SET_COOKIE, apagar.toString());

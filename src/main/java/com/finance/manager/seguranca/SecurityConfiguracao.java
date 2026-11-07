@@ -34,7 +34,8 @@ public class SecurityConfiguracao {
                 .cors(Customizer.withDefaults())
                 .csrf(csrf ->
                         csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                                .ignoringRequestMatchers("/auth"))
+                                .ignoringRequestMatchers("/auth")
+                                .ignoringRequestMatchers("/auth/me"))
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(url -> url

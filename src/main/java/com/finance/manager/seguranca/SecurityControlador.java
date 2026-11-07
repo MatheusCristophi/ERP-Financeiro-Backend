@@ -34,7 +34,6 @@ public class SecurityControlador {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("isAuthenticated()")
     public SessaoResposta me(@AuthenticationPrincipal UsuarioAutenticado principal) {
         Usuario usuario = principal.getUsuario();
 
