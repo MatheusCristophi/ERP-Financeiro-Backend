@@ -50,7 +50,7 @@ public class LancamentoControlador {
     @PostMapping
     public ResponseEntity<LancamentoResposta> criarLancamento(@AuthenticationPrincipal UsuarioAutenticado usuario,
                                                               @RequestParam UUID pessoaId,
-                                                              @RequestBody LancamentoRequisicao requisicao) throws BadRequestException {
+                                                              @RequestBody LancamentoRequisicao requisicao) {
         LancamentoResposta resposta = lancamentoServico.criarLancamentos(usuario.getUsuario().getId(), usuario.getEmpresaId(), pessoaId, requisicao);
         return new ResponseEntity<>(resposta, HttpStatus.CREATED);
     }

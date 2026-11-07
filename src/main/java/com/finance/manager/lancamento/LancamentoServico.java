@@ -4,6 +4,7 @@ import com.finance.manager.categoria.Categoria;
 import com.finance.manager.categoria.CategoriaRepositorio;
 import com.finance.manager.empresa.EmpresaRepositorio;
 import com.finance.manager.empresa.Empresas;
+import com.finance.manager.excecoes.ErroRequisicao;
 import com.finance.manager.excecoes.NaoEncontradoException;
 import com.finance.manager.excecoes.SemPermissaoException;
 import com.finance.manager.excecoes.VinculoNaoEncontrado;
@@ -16,7 +17,6 @@ import com.finance.manager.usuario.UsuarioRepositorio;
 import com.finance.manager.usuarioempresa.UsuarioEmpresa;
 import com.finance.manager.usuarioempresa.UsuarioEmpresaRepositorio;
 import com.finance.manager.usuarioempresa.UsuarioRoles;
-import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -44,7 +44,7 @@ public class LancamentoServico {
         this.pessoaRepositorio = pessoaRepositorio;
     }
 
-    public LancamentoResposta criarLancamentos(UUID usuarioId, UUID empresaId, UUID pessoaId, LancamentoRequisicao requisicao) throws BadRequestException {
+    public LancamentoResposta criarLancamentos(UUID usuarioId, UUID empresaId, UUID pessoaId, LancamentoRequisicao requisicao) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
@@ -72,11 +72,11 @@ public class LancamentoServico {
         lancamento.setValor(requisicao.valor());
         lancamento.setDataEmissao(requisicao.dataEmissao());
         if(lancamento.getDataVencimento().isBefore(lancamento.getDataEmissao()))
-            throw new BadRequestException("Data de validade não pode ser menor que a de emissão");
+            throw new ErroRequisicao("Data de validade não pode ser menor que a de emissão");
         lancamento.setDataVencimento(requisicao.dataVencimento());
         if (requisicao.dataPagamento() != null) {
             if (requisicao.dataPagamento().isBefore(lancamento.getDataEmissao())) {
-                throw new BadRequestException("Data de pagamento não pode ser menor que a de emissão");
+                throw new ErroRequisicao("Data de pagamento não pode ser menor que a de emissão");
             }
             lancamento.setDataPagamento(requisicao.dataPagamento());
         }
@@ -92,7 +92,7 @@ public class LancamentoServico {
         lancamento.setStatus(requisicao.status());
 
         if (lancamento.getStatus() == LancamentoStatus.PAGO && lancamento.getDataPagamento() == null) {
-            throw new BadRequestException("A data de pagamento é obrigatória para lançamentos com status PAGO.");
+            throw new ErroRequisicao("A data de pagamento é obrigatória para lançamentos com status PAGO.");
         }
 
         lancamento.setObservacao(requisicao.observacao());
@@ -155,7 +155,7 @@ public class LancamentoServico {
         return LancamentoResposta.from(resposta);
     }
 
-    public LancamentoResposta atualizarLancamentos(UUID usuarioId, UUID empresaId, UUID lancamentoId, UUID categoriaId, UUID pessoaId, LancamentoRequisicao requisicao) throws BadRequestException {
+    public LancamentoResposta atualizarLancamentos(UUID usuarioId, UUID empresaId, UUID lancamentoId, UUID categoriaId, UUID pessoaId, LancamentoRequisicao requisicao) {
         Usuario usuario = usuarioRepositorio.findById(usuarioId)
                 .orElseThrow(() -> new NaoEncontradoException("o Usuário"));
 
@@ -197,7 +197,7 @@ public class LancamentoServico {
             lancamento.setStatus(requisicao.status());
         }
         if(requisicao.status() == LancamentoStatus.PAGO && lancamento.getDataPagamento() == null) {
-            throw new BadRequestException("A data de pagamento é obrigatória para lançamentos com status PAGO.");
+            throw new ErroRequisicao("A data de pagamento é obrigatória para lançamentos com status PAGO.");
         }
         if(requisicao.observacao() != null) lancamento.setObservacao(requisicao.observacao());
 

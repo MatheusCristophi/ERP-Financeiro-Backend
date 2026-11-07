@@ -45,8 +45,8 @@ public class GlobalHandler {
         return problemDetail;
     }
 
-    @ExceptionHandler(BadRequestException.class)
-    public ProblemDetail handleErroNaRequisicao(BadRequestException ex) {
+    @ExceptionHandler(ErroRequisicao.class)
+    public ProblemDetail handleErroNaRequisicao(ErroRequisicao ex) {
         ProblemDetail problemDetail =  ProblemDetail.forStatusAndDetail(
                 HttpStatus.BAD_REQUEST,
                 "Ocorreu um erro na requisição, verifique as informações."
