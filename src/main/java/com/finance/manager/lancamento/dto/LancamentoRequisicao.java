@@ -38,7 +38,7 @@ public record LancamentoRequisicao(
 
         LocalDateTime dataPagamento,
 
-        @Size(max = 500, message = "A observação deve ter no máximo 500 caracteres")
+        @Size(max = 1500, message = "A observação deve ter no máximo 500 caracteres")
         String observacao
 ) {
 }

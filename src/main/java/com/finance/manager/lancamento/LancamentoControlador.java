@@ -60,7 +60,7 @@ public class LancamentoControlador {
                                                                   @PathVariable UUID lancamentoId,
                                                                   @RequestParam UUID categoriaId,
                                                                   @RequestParam UUID pessoaId,
-                                                                  @RequestBody LancamentoRequisicao requisicao) throws BadRequestException {
+                                                                  @RequestBody LancamentoRequisicao requisicao) {
         LancamentoResposta resposta = lancamentoServico.atualizarLancamentos(usuario.getUsuario().getId(), usuario.getEmpresaId(), lancamentoId, categoriaId, pessoaId, requisicao);
         return ResponseEntity.ok(resposta);
     }
