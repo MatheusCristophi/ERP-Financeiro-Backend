@@ -13,6 +13,6 @@ public class Cors implements WebMvcConfigurer {
                 .allowCredentials(true)
                 .allowedHeaders("*")
                 .allowedMethods("GET", "POST", "PATCH", "PUT", "DELETE")
-                .allowedOrigins("http://localhost:5173", "https://erp-financeiro-backend-tlf7.onrender.com");
+                .allowedOrigins("http://localhost:5173", "https://erp-b7-finance.vercel.app");
     }
 }
